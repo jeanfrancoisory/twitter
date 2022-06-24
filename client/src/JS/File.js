@@ -31,7 +31,7 @@ function File({userName, email, firstName, lastName, _id}) {
                 </form>
             </div>
         </div>
-        <TweetList email={email} _id={_id} tweetValue={tweetValue} mode='Home'></TweetList>
+        <TweetList userName={userName} _id={_id} tweetValue={tweetValue} mode='Home'></TweetList>
     </div>;
 }
 export default File;

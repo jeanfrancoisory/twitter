@@ -8,3 +8,11 @@ exports.getUser = (req, res) => {
         })
         .catch(() => res.status(400).json({message: "Error getting user"}));
 }
+
+exports.getUserByUN = (req, res) => {
+    User.findOne({userName: req.params.userName})
+        .then((u) => {
+            res.status(201).json(u);
+        })
+        .catch(() => res.status(400).json({message: "Error getting user"}));
+}

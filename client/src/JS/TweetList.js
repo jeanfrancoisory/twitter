@@ -4,7 +4,7 @@ import Tweet from "./Tweet"
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-function TweetList({email, _id, tweetValue, mode}) {
+function TweetList({userName, _id, tweetValue, mode}) {
     const [tweetList, setTweetList] = React.useState([]);
     const token = Cookies.get('token');
 
@@ -44,7 +44,8 @@ function TweetList({email, _id, tweetValue, mode}) {
 
     React.useEffect(() => {
         const tweetsID = []
-        axios.get(`/tweets/getUserLikes/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        if (userName) {
+            axios.get(`/tweets/getUserLikes/${userName}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 if(!response.data.message) {
                     response.data.forEach((e) => {
@@ -76,7 +77,7 @@ function TweetList({email, _id, tweetValue, mode}) {
                         });
                         break;
                     case 'profilTweets' :
-                        axios.get(`/tweets/getUserTweets/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+                        axios.get(`/tweets/getUserTweets/${userName}`, { headers: {authorization: 'Bearer ' + token}})
                         .then((response) => {
                             if(!response.data.message) {
                                 const tweets = [];
@@ -98,7 +99,7 @@ function TweetList({email, _id, tweetValue, mode}) {
                         });
                         break;
                     case 'profilLikes' :
-                        axios.get(`/tweets/getUserLikes/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+                        axios.get(`/tweets/getUserLikes/${userName}`, { headers: {authorization: 'Bearer ' + token}})
                             .then((response) => {
                                 if(!response.data.message) {
                                     const tweets = []
@@ -123,9 +124,8 @@ function TweetList({email, _id, tweetValue, mode}) {
                         break;
                 }
             });
-        
-        
-      }, [mode]);
+        }
+      }, [mode, userName]);
 
     function refreshTweetList(tweetID) {
         setTweetList(tweetList.filter(e => e['_id']!==tweetID));

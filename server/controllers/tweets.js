@@ -66,19 +66,24 @@ exports.getAllTweets = (req, res) => {
 }
 
 exports.getUserTweets = (req, res) => {
-    UserTweets.findOne({author: req.params.userID})
-        .populate("tweets")
-        .populate("author")
-        .then((ut) => {
-            if (ut) {
-                res.status(201).json(ut);
-            } else {
-                res.status(201).json({message: "No Tweets"});
-            }
+    User.findOne({userName: req.params.userName})
+        .then((u) => {
+            UserTweets.findOne({author: u._id})
+                .populate("tweets")
+                .populate("author")
+                .then((ut) => {
+                    if (ut) {
+                        res.status(201).json(ut);
+                    } else {
+                        res.status(201).json({message: "No Tweets"});
+                    }
+                })
+                .catch((error) =>
+                    res.status(400).json({ error: "Error UserTweets" })
+                );
         })
-        .catch((error) =>
-            res.status(400).json({ error: "Error UserTweets" })
-        );
+        .catch(() => res.status(400).json({message: "Error getting User"}));
+    
 }
 
 exports.supprTweet = (req, res) => {
@@ -219,29 +224,33 @@ exports.supprLike = (req, res) => {
 }
 
 exports.getUserLikes = (req, res) => {
-    UserFavs.findOne({user: req.params.userID})
-        .populate("tweets")
-        .then((ut) => {
-            if (ut) {
-                const tl = [];
-                ut.tweets.forEach((t) => {
-                    tl.push(t._id);
-                });
-                Tweet.find({
-                    _id: {
-                        $in : tl
+    User.findOne({userName: req.params.userName})
+        .then((u) => {
+            UserFavs.findOne({user: u._id})
+                .populate("tweets")
+                .then((ut) => {
+                    if (ut) {
+                        const tl = [];
+                        ut.tweets.forEach((t) => {
+                            tl.push(t._id);
+                        });
+                        Tweet.find({
+                            _id: {
+                                $in : tl
+                            }
+                        })
+                            .populate("author")
+                            .then((tweetslist) => {
+                                res.status(201).json(tweetslist);
+                            })
+                            .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
+                    } else {
+                        res.status(201).json({message: "No Tweets"});
                     }
                 })
-                    .populate("author")
-                    .then((tweetslist) => {
-                        res.status(201).json(tweetslist);
-                    })
-                    .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
-            } else {
-                res.status(201).json({message: "No Tweets"});
-            }
+                .catch((error) =>
+                    res.status(400).json({ error: "Error UserTweets" })
+                );
         })
-        .catch((error) =>
-            res.status(400).json({ error: "Error UserTweets" })
-        );
+        .catch(() => res.status(400).json({message: "Error getting User"}));
 }

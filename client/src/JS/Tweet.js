@@ -5,6 +5,7 @@ import { faHeart, faRetweet, faComment, faShare, faEllipsis } from '@fortawesome
 import axios from 'axios';
 import PopUpTweet from '../JS/PopUpTweet'
 import Cookies from 'js-cookie';
+import { Link } from "react-router-dom";
 
 function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetList, liked, userName}) {
 
@@ -55,7 +56,7 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
         <div className="profil-head">
             <div id="name-date">
                 <p>{firstName} {lastName}</p>
-                <div className="userNameProfil">{userName}</div>
+                <div className="userNameProfil"><Link to={`/accueil/profil/${userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{userName}</Link></div>
                 <div id="datePost">{date}</div>
             </div>
             <FontAwesomeIcon icon={faEllipsis} id="menuTweet" onClick={() => handleOpenPopUp()}/>

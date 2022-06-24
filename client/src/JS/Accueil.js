@@ -48,10 +48,10 @@ function Accueil() {
     // }
 
     return <div className="Accueil">
-        <Tache></Tache>
+        <Tache userName={userName}></Tache>
         <Routes>
             <Route path="/" element={<File userName={userName} email={email} firstName={firstName} lastName={lastName} _id={_id}></File>}/>
-            <Route path="/profil/*" element={<Profil userName={userName} email={email} firstName={firstName} lastName={lastName} _id={_id}></Profil>}/>
+            <Route path="/profil/:userName/*" element={<Profil _id={_id}></Profil>}/>
         </Routes>
         <Trend></Trend>
     </div>
