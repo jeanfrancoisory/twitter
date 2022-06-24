@@ -1,0 +1,37 @@
+.PopUpTweet {
+    position: absolute;
+    top: 2em;
+    left: 37vw;
+    width: auto;
+    height: auto;
+    background-color: var(--background-color);
+    border: var(--border-color) solid 1px;
+    border-radius: 10px;
+    box-shadow: var(--border-color) 2px;
+}
+
+.popUp {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.menuChoices {
+    display: flex;
+    margin: 1em;
+}
+
+.menuChoices > div {
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 1em;
+}
+
+.crossClose:hover {
+    cursor: pointer;
+}
+
+.supprTweet:hover {
+    cursor: pointer;
+}

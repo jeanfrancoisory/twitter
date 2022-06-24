@@ -1,0 +1,18 @@
+.Accueil {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.link {
+    text-decoration: none;
+    font-size: calc(12px + 2vmin);
+    font-weight: 700;
+    color: white;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.link > p {
+    margin: 0.5em 1em;
+}

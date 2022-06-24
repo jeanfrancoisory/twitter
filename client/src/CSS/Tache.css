@@ -1,0 +1,29 @@
+.Tache {
+    background-color: var(--background-color);
+    width: 100%;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.menu-items {
+    display: flex;
+    width: 40%;
+    cursor: pointer;
+}
+
+.link-menu {
+    text-decoration: none;
+    margin: auto;
+    display: flex;
+    color: white;
+}
+
+.menu-items .icon {
+    margin: 1em;
+    height: auto;
+    width: 11%;
+}

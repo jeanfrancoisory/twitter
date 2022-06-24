@@ -1,0 +1,33 @@
+.Profil {
+    background-color: var(--background-color);
+    width: 130%;
+    border: var(--border-color) solid;
+    border-width: 0 1px;
+}
+
+.choiceCategorie {
+    background-color: var(--background-color);
+    width: 100%;
+    height: 3em;
+    border: var(--border-color) solid;
+    border-width: 0 0 1px 0;
+    text-decoration: none;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: white;
+    display: flex;
+}
+
+.choicePart {
+    width: 50%;
+    display: flex;
+}
+
+.choicePart:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.choicePart > div {
+    margin: auto;
+    padding-bottom: 0.5em;
+}

@@ -1,0 +1,89 @@
+.Tweet {
+    background-color: var(--background-color);
+    text-decoration: none;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: white;
+    border-bottom: var(--border-color) solid 1px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-justify: inter-word;
+}
+
+.profil-head {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profil-head > div > p {
+    margin-left: 3em;
+    margin-bottom: 0.5em;
+}
+
+.profil-head > #name-date {
+    display: flex;
+}
+
+#datePost {
+    margin-top: 1em;
+    margin-left: 1.5em;
+    font-weight: 400;
+    color: var(--border-color);
+}
+
+.userNameProfil {
+    margin-top: 1em;
+    margin-left: 1.5em;
+    font-weight: 400;
+    color: var(--border-color);
+}
+
+#menuTweet {
+    margin-top: 1em;
+    margin-right: 1.5em;
+    color: var(--border-color);
+}
+
+#menuTweet:hover {
+    cursor: pointer;
+}
+ 
+.content {
+    margin-left: 3em;
+    margin-right: 1em;
+}
+.content > p {
+    margin-top: 0.5em;
+    font-weight: 400;
+}
+
+.LRT {
+    height: 1.5em;
+    display: flex;
+}
+
+.LRTParts {
+    color: var(--border-color);
+    width: 25%;
+}
+
+.Like:hover {
+    color: red;
+}
+
+.Response:hover {
+    color: blue;
+}
+
+.Retweet:hover {
+    color: green;
+}
+
+.Share:hover {
+    color: yellow;
+}
+
+.iconsLRT:hover {
+    cursor: pointer;
+}
