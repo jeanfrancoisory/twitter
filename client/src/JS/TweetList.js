@@ -45,7 +45,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
     React.useEffect(() => {
         const tweetsID = []
         if (userName) {
-            axios.get(`/tweets/getUserLikes/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+            axios.get(`/tweets/getUserLikesByID/${_id}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 if(!response.data.message) {
                     response.data.forEach((e) => {
@@ -99,7 +99,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
                         });
                         break;
                     case 'profilLikes' :
-                        axios.get(`/tweets/getUserLikes/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+                        axios.get(`/tweets/getUserLikesByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
                             .then((response) => {
                                 if(!response.data.message) {
                                     const tweets = []
@@ -112,11 +112,13 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             lastName: e.author.lastName,
                                             date: timeConverter(e.date),
                                             userID: e.author._id,
-                                            liked: true
+                                            liked: tweetsID.includes(e._id) ? true : false
                                         }
                                         tweets.push(t);
                                     });
                                     setTweetList(tweets);
+                                }else{
+                                    setTweetList([]);
                                 }
                             });
                         break;

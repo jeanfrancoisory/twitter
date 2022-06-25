@@ -10,6 +10,6 @@ router.get("/getUserTweets/:userName", auth, tweetCtrl.getUserTweets);
 router.delete("/deleteUserTweet/:userID/:tweetID", auth, tweetCtrl.supprTweet);
 router.post("/postLikeTweet", auth, tweetCtrl.addLike);
 router.delete("/deleteLikeTweet/:userID/:tweetID", auth, tweetCtrl.supprLike);
-router.get("/getUserLikes/:userName", auth, tweetCtrl.getUserLikes);
-
+router.get("/getUserLikesByID/:userID", auth, tweetCtrl.getUserLikesByID);
+router.get("/getUserLikesByUN/:userName", auth, tweetCtrl.getUserLikesByUN);
 module.exports = router;
