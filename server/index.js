@@ -26,9 +26,13 @@ app.use(jsonParser);
 const connexionRoutes = require("./routes/connexion");
 const tweetsRoutes = require("./routes/tweets");
 const userRoutes = require("./routes/user");
+const likesRoutes = require("./routes/likes");
+const retweetsRoutes = require("./routes/retweets");
 app.use("/connexion", connexionRoutes);
 app.use("/tweets", tweetsRoutes);
 app.use("/user", userRoutes);
+app.use("/likes", likesRoutes);
+app.use("/retweets", retweetsRoutes);
 
 module.exports = app;
 

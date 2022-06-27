@@ -43,22 +43,32 @@ function TweetList({userName, _id, tweetValue, mode}) {
     }, [tweetValue]);
 
     React.useEffect(() => {
-        const tweetsID = []
+        const tweetsIDLikes = []
+        const tweetsIDRT = []
         if (userName) {
-            axios.get(`/tweets/getUserLikesByID/${_id}`, { headers: {authorization: 'Bearer ' + token}})
-            .then((response) => {
-                if(!response.data.message) {
-                    response.data.forEach((e) => {
-                        tweetsID.push(e._id);
+            axios.all([axios.get(`/likes/getUserLikesByID/${_id}`, { headers: {authorization: 'Bearer ' + token}}), 
+                        axios.get(`/retweets/getUserRTByID/${_id}`, { headers: {authorization: 'Bearer ' + token}})])
+            .then(axios.spread((...response) => {
+                const responseLikes = response[0];
+                const responseRT = response[1]
+                if(!responseLikes.data.message) {
+                    responseLikes.data.forEach((e) => {
+                        tweetsIDLikes.push(e._id);
+                    });
+                }
+                if(!responseRT.data.message) {
+                    responseRT.data.forEach((e) => {
+                        tweetsIDRT.push(e._id);
                     });
                 }
                 switch (mode) {
                     case 'Home' :
-                        fetch("/tweets/getTweets")
-                        .then((res) => res.json())
-                        .then((data) => {
+                        axios.all([axios.get("/tweets/getAllTweets"), axios.get("/retweets/getAllRetweets")])
+                        .then(axios.spread((...response) => {
+                            const responseTweets = response[0];
+                            const responseRT = response[1];
                             const tweets = [];
-                            data.forEach((element) => {
+                            responseTweets.data.forEach((element) => {
                                 element.tweets.forEach((e) => {
                                     const t = {
                                         _id: e._id,
@@ -68,13 +78,31 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                         lastName: element.author.lastName,
                                         date: timeConverter(e.date),
                                         userID: element.author._id,
-                                        liked: tweetsID.includes(e._id) ? true : false
+                                        liked: tweetsIDLikes.includes(e._id) ? true : false,
+                                        rt: tweetsIDRT.includes(e._id) ? true : false
                                     }
                                     tweets.push(t);
                                 });
                             });
+                            responseRT.data.ids.forEach((id, index) => {
+                                const tweet = responseRT.data.tl.find(el => el._id === id);
+                                const user = responseRT.data.users[index]
+                                const t = {
+                                    _id: tweet._id,
+                                    content: tweet.content,
+                                    userName: tweet.author.userName,
+                                    firstName: tweet.author.firstName,
+                                    lastName: tweet.author.lastName,
+                                    date: timeConverter(tweet.date),
+                                    userID: tweet.author._id,
+                                    liked: tweetsIDLikes.includes(tweet._id) ? true : false,
+                                    rt: tweetsIDRT.includes(tweet._id) ? true : false,
+                                    rtUser: user.userName
+                                }
+                                tweets.push(t);
+                            })
                             setTweetList(tweets);
-                        });
+                        }));
                         break;
                     case 'profilTweets' :
                         axios.get(`/tweets/getUserTweets/${userName}`, { headers: {authorization: 'Bearer ' + token}})
@@ -90,7 +118,8 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             lastName: response.data.author.lastName,
                                             date: timeConverter(e.date),
                                             userID: e.userID,
-                                            liked: tweetsID.includes(e._id) ? true : false
+                                            liked: tweetsIDLikes.includes(e._id) ? true : false,
+                                            rt: tweetsIDRT.includes(e._id) ? true : false
                                         }
                                         tweets.push(t);
                                     });
@@ -99,7 +128,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
                         });
                         break;
                     case 'profilLikes' :
-                        axios.get(`/tweets/getUserLikesByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+                        axios.get(`/likes/getUserLikesByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
                             .then((response) => {
                                 if(!response.data.message) {
                                     const tweets = []
@@ -112,7 +141,34 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             lastName: e.author.lastName,
                                             date: timeConverter(e.date),
                                             userID: e.author._id,
-                                            liked: tweetsID.includes(e._id) ? true : false
+                                            liked: tweetsIDLikes.includes(e._id) ? true : false,
+                                            rt: tweetsIDRT.includes(e._id) ? true : false
+                                        }
+                                        tweets.push(t);
+                                    });
+                                    setTweetList(tweets);
+                                }else{
+                                    setTweetList([]);
+                                }
+                            });
+                        break;
+                    case 'profilRT' :
+                        axios.get(`/retweets/getUserRTByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+                            .then((response) => {
+                                if(!response.data.message) {
+                                    const tweets = []
+                                    response.data.forEach((e) => {
+                                        const t = {
+                                            _id: e._id,
+                                            content: e.content,
+                                            userName: e.author.userName,
+                                            firstName: e.author.firstName,
+                                            lastName: e.author.lastName,
+                                            date: timeConverter(e.date),
+                                            userID: e.author._id,
+                                            liked: tweetsIDLikes.includes(e._id) ? true : false,
+                                            rt: tweetsIDRT.includes(e._id) ? true : false,
+                                            rtUser: userName
                                         }
                                         tweets.push(t);
                                     });
@@ -125,7 +181,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
                     default :
                         break;
                 }
-            });
+            }));
         }
       }, [mode, userName]);
 
@@ -135,9 +191,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
 
 
     return <div className="tweetList">
-        {tweetList.map((e) => (
-            <Tweet key={e._id} content={e.content} firstName={e.firstName} lastName={e.lastName} 
-            _id={e._id} userID={e.userID} date={e.date} refreshTweetList={refreshTweetList} liked={e.liked} userName={e.userName}></Tweet>
+        {tweetList.map((e, index) => (
+            <Tweet key={index} content={e.content} firstName={e.firstName} lastName={e.lastName} 
+            _id={e._id} userID={e.userID} date={e.date} refreshTweetList={refreshTweetList} liked={e.liked} userName={e.userName} rt={e.rt} rtUser={e.rtUser}></Tweet>
         ))}
     </div>
 }

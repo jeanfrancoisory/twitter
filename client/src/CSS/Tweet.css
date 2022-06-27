@@ -11,6 +11,21 @@
     text-justify: inter-word;
 }
 
+.topRT {
+    font-size: calc(8px + 1vmin);
+    font-weight: 500;
+    color: var(--border-color);
+    margin-left: 3em;
+    margin-top: 0.5em;
+    display: flex;
+}
+
+.linkUNRT {
+    color: var(--border-color),;
+    text-decoration: none;
+    margin: 0 1em;
+}
+
 .profil-head {
     display: flex;
     justify-content: space-between;

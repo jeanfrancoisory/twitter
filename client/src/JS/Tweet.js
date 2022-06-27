@@ -7,12 +7,18 @@ import PopUpTweet from '../JS/PopUpTweet'
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
 
-function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetList, liked, userName}) {
+function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetList, liked, userName, rt, rtUser}) {
 
     const [popUpOn, setPopUpOn] = useState(false);
     const [tweetLiked, setTweetLiked] = useState(liked);
+    const [tweetRT, setTweetRT] = useState(rt);
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
+
+    React.useEffect(() => {
+        setTweetLiked(liked);
+        setTweetRT(rt);
+    })
 
     function handleOpenPopUp() {
         setPopUpOn(!popUpOn);   
@@ -20,14 +26,14 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
 
     function onClickLike() {
         tweetLiked ?
-        axios.delete(`/tweets/deleteLikeTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.delete(`/likes/deleteLikeTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
             .catch(err => {
                 console.error(err);
             }) :
-        axios.post("/tweets/postLikeTweet", {userID: currentUserID, tweetID: _id}, { headers: {authorization: 'Bearer ' + token}})
+        axios.post("/likes/postLikeTweet", {userID: currentUserID, tweetID: _id}, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
@@ -35,6 +41,25 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
                 console.error(err);
             });
         setTweetLiked(!tweetLiked);
+    }
+
+    function onClickRT() {
+        tweetRT ?
+        axios.delete(`/retweets/deleteRTTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                console.log(response.data.message);
+            })
+            .catch(err => {
+                console.error(err);
+            }) :
+        axios.post("/retweets/postRTTweet", {userID: currentUserID, tweetID: _id}, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                console.log(response.data.message);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        setTweetRT(!tweetRT);
     }
 
     function supprTweet() {
@@ -53,6 +78,7 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
     }
 
     return <div className="Tweet">
+        {rtUser && <div className="topRT"><FontAwesomeIcon icon={faRetweet}/>  <Link to={`/accueil/profil/${rtUser}`} className="linkUNRT">{rtUser}</Link> à retweeter</div>}
         <div className="profil-head">
             <div id="name-date">
                 <p>{firstName} {lastName}</p>
@@ -73,7 +99,8 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
                     style={{color: !tweetLiked? 'var(--border-color)' : 'red'}} onClick={() => onClickLike()}/>
                 </div>
                 <div className="LRTParts">
-                    <FontAwesomeIcon icon={faRetweet} className="iconsLRT Retweet"/>
+                    <FontAwesomeIcon icon={faRetweet} className="iconsLRT Retweet"
+                    style={{color: !tweetRT? 'var(--border-color)' : 'green'}} onClick={() => onClickRT()}/>
                 </div>
                 <div className="LRTParts">
                     <FontAwesomeIcon icon={faShare}  className="iconsLRT Share"/>
