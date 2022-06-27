@@ -79,7 +79,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                         date: timeConverter(e.date),
                                         userID: element.author._id,
                                         liked: tweetsIDLikes.includes(e._id) ? true : false,
-                                        rt: tweetsIDRT.includes(e._id) ? true : false
+                                        rt: tweetsIDRT.includes(e._id) ? true : false,
+                                        nbFavs: e.favoris,
+                                        nbRT: e.retweets
                                     }
                                     tweets.push(t);
                                 });
@@ -97,7 +99,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                     userID: tweet.author._id,
                                     liked: tweetsIDLikes.includes(tweet._id) ? true : false,
                                     rt: tweetsIDRT.includes(tweet._id) ? true : false,
-                                    rtUser: user.userName
+                                    rtUser: user.userName,
+                                    nbFavs: tweet.favoris,
+                                    nbRT: tweet.retweets
                                 }
                                 tweets.push(t);
                             })
@@ -119,7 +123,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             date: timeConverter(e.date),
                                             userID: e.userID,
                                             liked: tweetsIDLikes.includes(e._id) ? true : false,
-                                            rt: tweetsIDRT.includes(e._id) ? true : false
+                                            rt: tweetsIDRT.includes(e._id) ? true : false,
+                                            nbFavs: e.favoris,
+                                            nbRT: e.retweets
                                         }
                                         tweets.push(t);
                                     });
@@ -142,7 +148,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             date: timeConverter(e.date),
                                             userID: e.author._id,
                                             liked: tweetsIDLikes.includes(e._id) ? true : false,
-                                            rt: tweetsIDRT.includes(e._id) ? true : false
+                                            rt: tweetsIDRT.includes(e._id) ? true : false,
+                                            nbFavs: e.favoris,
+                                            nbRT: e.retweets
                                         }
                                         tweets.push(t);
                                     });
@@ -168,7 +176,9 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             userID: e.author._id,
                                             liked: tweetsIDLikes.includes(e._id) ? true : false,
                                             rt: tweetsIDRT.includes(e._id) ? true : false,
-                                            rtUser: userName
+                                            rtUser: userName,
+                                            nbFavs: e.favoris,
+                                            nbRT: e.retweets
                                         }
                                         tweets.push(t);
                                     });
@@ -192,8 +202,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
 
     return <div className="tweetList">
         {tweetList.map((e, index) => (
-            <Tweet key={index} content={e.content} firstName={e.firstName} lastName={e.lastName} 
-            _id={e._id} userID={e.userID} date={e.date} refreshTweetList={refreshTweetList} liked={e.liked} userName={e.userName} rt={e.rt} rtUser={e.rtUser}></Tweet>
+            <Tweet key={index} tweet={e} refreshTweetList={refreshTweetList}></Tweet>
         ))}
     </div>
 }

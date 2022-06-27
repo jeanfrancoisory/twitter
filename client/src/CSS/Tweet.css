@@ -102,3 +102,7 @@
 .iconsLRT:hover {
     cursor: pointer;
 }
+
+.iconNB {
+    display: flex;
+}

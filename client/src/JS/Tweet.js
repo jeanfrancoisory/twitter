@@ -7,17 +7,17 @@ import PopUpTweet from '../JS/PopUpTweet'
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
 
-function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetList, liked, userName, rt, rtUser}) {
+function Tweet({tweet, refreshTweetList}) {
 
     const [popUpOn, setPopUpOn] = useState(false);
-    const [tweetLiked, setTweetLiked] = useState(liked);
-    const [tweetRT, setTweetRT] = useState(rt);
+    const [tweetLiked, setTweetLiked] = useState(tweet.liked);
+    const [tweetRT, setTweetRT] = useState(tweet.rt);
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
 
     React.useEffect(() => {
-        setTweetLiked(liked);
-        setTweetRT(rt);
+        setTweetLiked(tweet.liked);
+        setTweetRT(tweet.rt);
     })
 
     function handleOpenPopUp() {
@@ -26,14 +26,14 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
 
     function onClickLike() {
         tweetLiked ?
-        axios.delete(`/likes/deleteLikeTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.delete(`/likes/deleteLikeTweet/${currentUserID}/${tweet._id}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
             .catch(err => {
                 console.error(err);
             }) :
-        axios.post("/likes/postLikeTweet", {userID: currentUserID, tweetID: _id}, { headers: {authorization: 'Bearer ' + token}})
+        axios.post("/likes/postLikeTweet", {userID: currentUserID, tweetID: tweet._id}, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
@@ -45,14 +45,14 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
 
     function onClickRT() {
         tweetRT ?
-        axios.delete(`/retweets/deleteRTTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.delete(`/retweets/deleteRTTweet/${currentUserID}/${tweet._id}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
             .catch(err => {
                 console.error(err);
             }) :
-        axios.post("/retweets/postRTTweet", {userID: currentUserID, tweetID: _id}, { headers: {authorization: 'Bearer ' + token}})
+        axios.post("/retweets/postRTTweet", {userID: currentUserID, tweetID: tweet._id}, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
             })
@@ -63,11 +63,11 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
     }
 
     function supprTweet() {
-        if (userID === currentUserID) {
-            axios.delete(`/tweets/deleteUserTweet/${currentUserID}/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        if (tweet.userID === currentUserID) {
+            axios.delete(`/tweets/deleteUserTweet/${currentUserID}/${tweet._id}`, { headers: {authorization: 'Bearer ' + token}})
                 .then((response) => {
                     console.log(response.data.message);
-                    refreshTweetList(_id);
+                    refreshTweetList(tweet._id);
                 })
                 .catch(err => {
                     console.error(err);
@@ -78,29 +78,35 @@ function Tweet({content, firstName, lastName, _id, userID, date, refreshTweetLis
     }
 
     return <div className="Tweet">
-        {rtUser && <div className="topRT"><FontAwesomeIcon icon={faRetweet}/>  <Link to={`/accueil/profil/${rtUser}`} className="linkUNRT">{rtUser}</Link> à retweeter</div>}
+        {tweet.rtUser && <div className="topRT"><FontAwesomeIcon icon={faRetweet}/>  <Link to={`/accueil/profil/${tweet.rtUser}`} className="linkUNRT">{tweet.rtUser}</Link> à retweeter</div>}
         <div className="profil-head">
             <div id="name-date">
-                <p>{firstName} {lastName}</p>
-                <div className="userNameProfil"><Link to={`/accueil/profil/${userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{userName}</Link></div>
-                <div id="datePost">{date}</div>
+                <p>{tweet.firstName} {tweet.lastName}</p>
+                <div className="userNameProfil"><Link to={`/accueil/profil/${tweet.userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{tweet.userName}</Link></div>
+                <div id="datePost">{tweet.date}</div>
             </div>
             <FontAwesomeIcon icon={faEllipsis} id="menuTweet" onClick={() => handleOpenPopUp()}/>
             {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>}
         </div>
         <div className="content">
-            <p>{content}</p>
+            <p>{tweet.content}</p>
             <div className="LRT">
                 <div className="LRTParts">
                     <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>
                 </div>
-                <div className="LRTParts">
-                    <FontAwesomeIcon icon={faHeart} className="iconsLRT Like" 
-                    style={{color: !tweetLiked? 'var(--border-color)' : 'red'}} onClick={() => onClickLike()}/>
+                <div className="LRTParts" style={{color: !tweetLiked? 'var(--border-color)' : 'red'}}>
+                    <div className="Like iconNB">
+                        <FontAwesomeIcon icon={faHeart} className="iconsLRT" 
+                            onClick={() => onClickLike()}/>
+                        <div style={{marginLeft: '1em'}}> {tweet.nbFavs!==0 && tweet.nbFavs}</div>
+                    </div>
                 </div>
-                <div className="LRTParts">
-                    <FontAwesomeIcon icon={faRetweet} className="iconsLRT Retweet"
-                    style={{color: !tweetRT? 'var(--border-color)' : 'green'}} onClick={() => onClickRT()}/>
+                <div className="LRTParts" style={{color: !tweetRT? 'var(--border-color)' : 'green'}}>
+                    <div className="Retweet iconNB">
+                        <FontAwesomeIcon icon={faRetweet} className="iconsLRT"
+                            onClick={() => onClickRT()}/>
+                        <div style={{marginLeft: '1em'}}> {tweet.nbRT!==0 && tweet.nbRT}</div>
+                    </div>
                 </div>
                 <div className="LRTParts">
                     <FontAwesomeIcon icon={faShare}  className="iconsLRT Share"/>
