@@ -21,7 +21,7 @@
 .profil > p {
     font-size: calc(8px + 1vmin);
     font-weight: 700;
-    color: white;
+    color: var(--text-color);
     text-align: center;
     margin: 1em 0 0 0;
 }
@@ -47,14 +47,14 @@ form > input {
     border-bottom: #3944e0 solid 2px;
     font-size: calc(10px + 1vmin);
     font-weight: 500;
-    color: white;
+    color: var(--text-color);
 }
 
 form > input::placeholder {
     text-decoration: none;
     font-size: calc(10px + 1vmin);
     font-weight: 700;
-    color: white;
+    color: var(--text-color);
     
 }
 

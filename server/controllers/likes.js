@@ -6,7 +6,7 @@ exports.addLike = (req, res) => {
     Tweet.findOne({_id: req.body.tweetID})
         .then((t) => {
             User.findOne({_id: req.body.userID})
-                .then(() => {
+                .then((user) => {
                     UserFavs.findOne({user: req.body.userID})
                         .then((uf) => {
                             if (uf) {
@@ -22,13 +22,17 @@ exports.addLike = (req, res) => {
                                 UserFavs.updateOne({_id: uf._id}, newUserFavs)
                                     .then(() => {
                                         t.favoris++;
+                                        t.favorisUsers.push(user._id);
                                         const tweet = new Tweet({
                                             _id: t._id,
                                             content: t.content,
                                             date: t.date,
                                             favoris: t.favoris,
                                             retweets: t.retweets,
-                                            author: t.author
+                                            author: t.author,
+                                            responses: t.responses,
+                                            favorisUsers: t.favorisUsers,
+                                            retweetsUsers: t.retweetsUsers
                                         });
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet liked"}))
@@ -42,14 +46,19 @@ exports.addLike = (req, res) => {
                                     tweets: [t._id]
                                 });
                                 newUserFavs.save()
-                                    .then(() => {t.favoris++;
+                                    .then(() => {
+                                        t.favoris++;
+                                        t.favorisUsers.push(user._id);
                                         const tweet = new Tweet({
                                             _id: t._id,
                                             content: t.content,
                                             date: t.date,
                                             favoris: t.favoris,
                                             retweets: t.retweets,
-                                            author: t.author
+                                            author: t.author,
+                                            responses: t.responses,
+                                            favorisUsers: t.favorisUsers,
+                                            retweetsUsers: t.retweetsUsers
                                         });
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet liked"}))
@@ -81,6 +90,8 @@ exports.supprLike = (req, res) => {
                         .then(() => {
                             Tweet.findOne({_id: req.params.tweetID})
                                 .then((t) => {
+                                    const index = t.favorisUsers.indexOf(t.favorisUsers.find(e => e.toString() === req.params.userID));
+                                    index!==-1 && t.favorisUsers.splice(index, 1);
                                     t.favoris--;
                                     const tweet = new Tweet({
                                         _id: t._id,
@@ -88,7 +99,10 @@ exports.supprLike = (req, res) => {
                                         date: t.date,
                                         favoris: t.favoris,
                                         retweets: t.retweets,
-                                        author: t.author
+                                        author: t.author,
+                                        responses: t.responses,
+                                        favorisUsers: t.favorisUsers,
+                                        retweetsUsers: t.retweetsUsers
                                     });
                                     Tweet.updateOne({_id: t._id}, tweet)
                                         .then(() => res.status(201).json({message: "Tweet disliked"}))

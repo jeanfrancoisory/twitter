@@ -67,6 +67,7 @@ function Tweet({tweet, refreshTweetList}) {
             axios.delete(`/tweets/deleteUserTweet/${currentUserID}/${tweet._id}`, { headers: {authorization: 'Bearer ' + token}})
                 .then((response) => {
                     console.log(response.data.message);
+                    setPopUpOn(!popUpOn); 
                     refreshTweetList(tweet._id);
                 })
                 .catch(err => {
@@ -89,7 +90,9 @@ function Tweet({tweet, refreshTweetList}) {
             {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>}
         </div>
         <div className="content">
+            <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
             <p>{tweet.content}</p>
+            </Link>
             <div className="LRT">
                 <div className="LRTParts">
                     <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>
@@ -113,7 +116,6 @@ function Tweet({tweet, refreshTweetList}) {
                 </div>
             </div>
         </div>
-        
     </div>;
 }
 export default Tweet;

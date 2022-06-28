@@ -17,12 +17,13 @@ code {
   --border-color: rgb(92, 92, 92);
   --background-color: #000000;
   --blue-color: #0010a3;
+  --text-color: white;
 }
 
 .button {
   font-size:0.6em;
   font-weight: 700;
-  color: white;
+  color: var(--text-color);
   background-image: linear-gradient(#3944e0, #0010a3);
   border-radius: 10px;
   border: none;

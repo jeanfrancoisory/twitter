@@ -4,7 +4,7 @@ import Tweet from "./Tweet"
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-function TweetList({userName, _id, tweetValue, mode}) {
+function TweetList({userName, _id, tweetValue, mode, tweetID}) {
     const [tweetList, setTweetList] = React.useState([]);
     const token = Cookies.get('token');
 
@@ -35,6 +35,12 @@ function TweetList({userName, _id, tweetValue, mode}) {
                 .then((response) => {
                     response.data.date = timeConverter(response.data.date);
                     setTweetList([...tweetList, response.data]);
+                    if(mode === 'Responses' && tweetID) {
+                        console.log('res on the way')
+                        axios.post('/responses/postResponse', {tweetID: tweetID, responseID: response.data._id}, { headers: {authorization: 'Bearer ' + token}})
+                            .then((res) => console.log(res.data.message))
+                            .catch(err => console.error(err));
+                    }
                 })
                 .catch(err => {
                     console.error(err);
@@ -45,6 +51,7 @@ function TweetList({userName, _id, tweetValue, mode}) {
     React.useEffect(() => {
         const tweetsIDLikes = []
         const tweetsIDRT = []
+
         if (userName) {
             axios.all([axios.get(`/likes/getUserLikesByID/${_id}`, { headers: {authorization: 'Bearer ' + token}}), 
                         axios.get(`/retweets/getUserRTByID/${_id}`, { headers: {authorization: 'Bearer ' + token}})])
@@ -177,6 +184,35 @@ function TweetList({userName, _id, tweetValue, mode}) {
                                             liked: tweetsIDLikes.includes(e._id) ? true : false,
                                             rt: tweetsIDRT.includes(e._id) ? true : false,
                                             rtUser: userName,
+                                            nbFavs: e.favoris,
+                                            nbRT: e.retweets
+                                        }
+                                        tweets.push(t);
+                                    });
+                                    setTweetList(tweets);
+                                }else{
+                                    setTweetList([]);
+                                }
+                            });
+                        break;
+                    case 'Responses':
+                        tweetID &&
+                        axios.get(`/responses/getTweetResponses/${tweetID}`, { headers: {authorization: 'Bearer ' + token}})
+                            .then((response) => {
+                                console.log(response)
+                                if(!response.data.message) {
+                                    const tweets = []
+                                    response.data.forEach((e) => {
+                                        const t = {
+                                            _id: e._id,
+                                            content: e.content,
+                                            userName: e.author.userName,
+                                            firstName: e.author.firstName,
+                                            lastName: e.author.lastName,
+                                            date: timeConverter(e.date),
+                                            userID: e.author._id,
+                                            liked: tweetsIDLikes.includes(e._id) ? true : false,
+                                            rt: tweetsIDRT.includes(e._id) ? true : false,
                                             nbFavs: e.favoris,
                                             nbRT: e.retweets
                                         }

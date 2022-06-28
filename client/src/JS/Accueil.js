@@ -6,6 +6,7 @@ import Tache from "./Tache";
 import File from "./File";
 import Trend from "./Trends";
 import Profil from "./Profil";
+import FullTweet from "./FullTweet";
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -52,6 +53,7 @@ function Accueil() {
         <Routes>
             <Route path="/" element={<File userName={userName} email={email} firstName={firstName} lastName={lastName} _id={_id}></File>}/>
             <Route path="/profil/:userName/*" element={<Profil _id={_id}></Profil>}/>
+            <Route path="/profil/:userName/status/:tweetID" element={<FullTweet/>}/>
         </Routes>
         <Trend></Trend>
     </div>

@@ -3,7 +3,7 @@
     text-decoration: none;
     font-size: calc(10px + 1vmin);
     font-weight: 500;
-    color: white;
+    color: var(--text-color);
     border-bottom: var(--border-color) solid 1px;
     display: flex;
     flex-direction: column;
@@ -68,9 +68,10 @@
     margin-left: 3em;
     margin-right: 1em;
 }
-.content > p {
+.content p {
     margin-top: 0.5em;
     font-weight: 400;
+    color: var(--text-color);
 }
 
 .LRT {

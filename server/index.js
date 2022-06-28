@@ -28,11 +28,13 @@ const tweetsRoutes = require("./routes/tweets");
 const userRoutes = require("./routes/user");
 const likesRoutes = require("./routes/likes");
 const retweetsRoutes = require("./routes/retweets");
+const responsesRoutes = require("./routes/response");
 app.use("/connexion", connexionRoutes);
 app.use("/tweets", tweetsRoutes);
 app.use("/user", userRoutes);
 app.use("/likes", likesRoutes);
 app.use("/retweets", retweetsRoutes);
+app.use("/responses", responsesRoutes);
 
 module.exports = app;
 

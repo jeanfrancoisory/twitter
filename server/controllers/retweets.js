@@ -6,7 +6,7 @@ exports.addRetweet = (req, res) => {
     Tweet.findOne({_id: req.body.tweetID})
         .then((t) => {
             User.findOne({_id: req.body.userID})
-                .then(() => {
+                .then((user) => {
                     UserRetweets.findOne({user: req.body.userID})
                         .then((ur) => {
                             if (ur) {
@@ -22,12 +22,16 @@ exports.addRetweet = (req, res) => {
                                 UserRetweets.updateOne({_id: ur._id}, newUserRetweets)
                                     .then(() => {
                                         t.retweets++;
+                                        t.retweetsUsers.push(user._id);
                                         const tweet = new Tweet({
                                             _id: t._id,
                                             content: t.content,
                                             favoris: t.favoris,
                                             retweets: t.retweets,
-                                            author: t.author
+                                            author: t.author,
+                                            responses: t.responses,
+                                            favorisUsers: t.favorisUsers,
+                                            retweetsUsers: t.retweetsUsers
                                         });
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet retweeted"}))
@@ -43,12 +47,16 @@ exports.addRetweet = (req, res) => {
                                 newUserRetweets.save()
                                     .then(() => {
                                         t.retweets++;
+                                        t.retweetsUsers.push(user._id);
                                         const tweet = new Tweet({
                                             _id: t._id,
                                             content: t.content,
                                             favoris: t.favoris,
                                             retweets: t.retweets,
-                                            author: t.author
+                                            author: t.author,
+                                            responses: t.responses,
+                                            favorisUsers: t.favorisUsers,
+                                            retweetsUsers: t.retweetsUsers
                                         });
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet retweeted"}))
@@ -80,6 +88,8 @@ exports.supprRetweet = (req, res) => {
                         .then(() => {
                             Tweet.findOne({_id: req.params.tweetID})
                                 .then((t) => {
+                                    const index = t.retweetsUsers.indexOf(t.retweetsUsers.find(e => e.toString() === req.params.userID));
+                                    index && t.retweetsUsers.splice(index, 1);
                                     t.retweets--;
                                     const tweet = new Tweet({
                                         _id: t._id,
@@ -87,7 +97,10 @@ exports.supprRetweet = (req, res) => {
                                         date: t.date,
                                         favoris: t.favoris,
                                         retweets: t.retweets,
-                                        author: t.author
+                                        author: t.author,
+                                        responses: t.responses,
+                                        favorisUsers: t.favorisUsers,
+                                        retweetsUsers: t.retweetsUsers
                                     });
                                     Tweet.updateOne({_id: t._id}, tweet)
                                         .then(() => res.status(201).json({message: "Tweet disretweeted"}))

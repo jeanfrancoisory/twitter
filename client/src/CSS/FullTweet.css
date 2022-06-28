@@ -1,0 +1,135 @@
+.FullTweet {
+    background-color: var(--background-color);
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--text-color);
+    width: 130%;
+    border: var(--border-color) solid;
+    border-width: 0 1px;
+}
+
+.topFullTweet {
+    height: 10em;
+    border-bottom: var(--border-color) solid 1px;
+}
+
+.profil-head-full {
+    display: flex;
+    justify-content: space-between;
+    font-size: calc(10px + 1vmin);
+}
+
+.profil-head-full > div > p {
+    margin-left: 1em;
+    margin-bottom: 0.5em;
+}
+
+.profil-head-full > #name-date-full {
+    display: flex;
+}
+
+#datePost-full {
+    margin-top: 1em;
+    margin-left: 1.5em;
+    font-weight: 400;
+    color: var(--border-color);
+}
+
+.userNameProfil-full {
+    margin-top: 1em;
+    margin-left: 1.5em;
+    font-weight: 400;
+    color: var(--border-color);
+}
+
+#menuTweet-full {
+    margin-top: 1em;
+    margin-right: 1.5em;
+    color: var(--border-color);
+}
+
+#menuTweet-full:hover {
+    cursor: pointer;
+}
+ 
+.content-full {
+    margin-left: 1em;
+    margin-right: 1em;
+    font-size: calc(10px + 2vmin);
+}
+.content-full p {
+    margin-top: 0.5em;
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+.LRT-full {
+    height: 1.5em;
+    display: flex;
+}
+
+.LRTParts-full {
+    color: var(--border-color);
+    width: 25%;
+}
+
+.Like-full:hover {
+    color: red;
+}
+
+.Response-full:hover {
+    color: blue;
+}
+
+.Retweet-full:hover {
+    color: green;
+}
+
+.Share-full:hover {
+    color: yellow;
+}
+
+.iconsLRT-full:hover {
+    cursor: pointer;
+}
+
+.iconNB-full {
+    display: flex;
+}
+
+.textBox-full {
+    width: 100%;
+    height: 10em;
+    border-bottom: var(--border-color) solid 1px;
+}
+
+.textBox-full > form {
+    height: 100%;
+    display: flex;
+    justify-content: right;
+    flex-direction: column;
+}
+
+form > input {
+    width: 80%;
+    height: 60%;
+    margin: 1% 5%;
+    background-color: var(--background-color);
+    border: none;
+    border-bottom: #3944e0 solid 2px;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+form > input::placeholder {
+    text-decoration: none;
+    font-size: calc(10px + 1vmin);
+    font-weight: 700;
+    color: var(--text-color);
+    
+}
+
+form >input:focus {
+    outline: none;
+}
