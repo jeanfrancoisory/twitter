@@ -1,4 +1,3 @@
-const Response = require("../models/Response");
 const Tweet = require("../models/Tweet");
 
 exports.getTweetResponses = (req, res) => {

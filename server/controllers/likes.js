@@ -1,25 +1,27 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
-const UserFavs = require('../models/UserFavs');
+const UserTweets = require('../models/UserTweets');
 
 exports.addLike = (req, res) => {
     Tweet.findOne({_id: req.body.tweetID})
         .then((t) => {
             User.findOne({_id: req.body.userID})
                 .then((user) => {
-                    UserFavs.findOne({user: req.body.userID})
-                        .then((uf) => {
-                            if (uf) {
-                                 if (uf.tweets.includes(t._id)) {
+                    UserTweets.findOne({user: req.body.userID})
+                        .then((ut) => {
+                            if (ut) {
+                                 if (ut.favs.includes(t._id)) {
                                      res.status(201).json({message: "Tweet already liked"});
                                  } else {
-                                     uf.tweets.push(t._id);
-                                const newUserFavs = new UserFavs({
-                                    _id: uf._id,
-                                    user: uf.user,
-                                    tweets: uf.tweets
+                                     ut.favs.push(t._id);
+                                const newUserTweets = new UserTweets({
+                                    _id: ut._id,
+                                    user: ut.user,
+                                    tweets: ut.tweets,
+                                    favs: ut.favs,
+                                    retweets: ut.retweets
                                 });
-                                UserFavs.updateOne({_id: uf._id}, newUserFavs)
+                                UserTweets.updateOne({_id: ut._id}, newUserTweets)
                                     .then(() => {
                                         t.favoris++;
                                         t.favorisUsers.push(user._id);
@@ -38,14 +40,14 @@ exports.addLike = (req, res) => {
                                             .then(() => res.status(201).json({message: "Tweet liked"}))
                                             .catch(() => res.status(400).json({message: "Error updating Tweet's fav"}));
                                     })
-                                    .catch(() => res.status(400).json({message: "Error updating UserFavs"}));
+                                    .catch(() => res.status(400).json({message: "Error updating UserTweets"}));
                                  }
                             } else {
-                                const newUserFavs = new UserFavs({
+                                const newUserTweets = new UserTweets({
                                     user: req.body.userID,
-                                    tweets: [t._id]
+                                    favs: [t._id]
                                 });
-                                newUserFavs.save()
+                                newUserTweets.save()
                                     .then(() => {
                                         t.favoris++;
                                         t.favorisUsers.push(user._id);
@@ -63,10 +65,10 @@ exports.addLike = (req, res) => {
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet liked"}))
                                             .catch(() => res.status(400).json({message: "Error updating Tweet's fav"}));})
-                                    .catch(() => res.status(400).json({message: "Error saving new UserFavs"}));
+                                    .catch(() => res.status(400).json({message: "Error saving new UserTweets"}));
                             }
                         })
-                        .catch(() => res.status(400).json({message: "Error UserFavs"}));
+                        .catch(() => res.status(400).json({message: "Error UserTweets"}));
                 })
                 .catch(() => res.status(400).json({message: "Error getting User"}));
             
@@ -75,18 +77,20 @@ exports.addLike = (req, res) => {
 }
 
 exports.supprLike = (req, res) => {
-    UserFavs.findOne({user: req.params.userID})
-        .then((uf) => {
-            if (uf) {
-                const index = uf.tweets.indexOf(uf.tweets.find(e => e.toString() === req.params.tweetID));
+    UserTweets.findOne({user: req.params.userID})
+        .then((ut) => {
+            if (ut) {
+                const index = ut.favs.indexOf(ut.favs.find(e => e.toString() === req.params.tweetID));
                 if (index != -1) {
-                    uf.tweets.splice(index, 1);
-                    const newUserFavs = new UserFavs({
-                        _id: uf._id,
-                        user: uf.user,
-                        tweets: uf.tweets
+                    ut.favs.splice(index, 1);
+                    const newUserTweets = new UserTweets({
+                        _id: ut._id,
+                        user: ut.user,
+                        tweets: ut.tweets,
+                        favs: ut.favs,
+                        retweets: ut.retweets
                     });
-                    UserFavs.updateOne({_id: uf._id}, newUserFavs)
+                    UserTweets.updateOne({_id: ut._id}, newUserTweets)
                         .then(() => {
                             Tweet.findOne({_id: req.params.tweetID})
                                 .then((t) => {
@@ -110,7 +114,7 @@ exports.supprLike = (req, res) => {
                                 })
                                 .catch(() => res.status(400).json({message: "Error getting tweet"}));
                         })
-                        .catch((error) =>{
+                        .catch(() =>{
                             res.status(400).json({ error: "Error deleting tweet from list" });
                         });
                 } else {
@@ -126,46 +130,42 @@ exports.supprLike = (req, res) => {
 }
 
 exports.getUserLikesByID = (req, res) => {
-    User.findOne({_id: req.params.userID})
-        .then((u) => {
-            UserFavs.findOne({user: u._id})
-                .populate("tweets")
-                .then((ut) => {
-                    if (ut) {
-                        const tl = [];
-                        ut.tweets.forEach((t) => {
-                            tl.push(t._id);
-                        });
-                        Tweet.find({
-                            _id: {
-                                $in : tl
-                            }
-                        })
-                            .populate("author")
-                            .then((tweetslist) => {
-                                res.status(201).json(tweetslist);
-                            })
-                            .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
-                    } else {
-                        res.status(201).json({message: "No Tweets"});
+    UserTweets.findOne({user: req.params.userID})
+        .populate("favs")
+        .then((ut) => {
+            if (ut) {
+                const tl = [];
+                ut.favs.forEach((t) => {
+                    tl.push(t._id);
+                });
+                Tweet.find({
+                    _id: {
+                        $in : tl
                     }
                 })
-                .catch((error) =>
-                    res.status(400).json({ error: "Error UserTweets" })
-                );
+                    .populate("author")
+                    .then((tweetslist) => {
+                        res.status(201).json(tweetslist);
+                    })
+                    .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
+            } else {
+                res.status(201).json({message: "No Tweets"});
+            }
         })
-        .catch(() => res.status(400).json({message: "Error getting User"}));
+        .catch((error) =>
+            res.status(400).json({ error: "Error UserTweets" })
+        );
 }
 
 exports.getUserLikesByUN = (req, res) => {
     User.findOne({userName: req.params.userName})
         .then((u) => {
-            UserFavs.findOne({user: u._id})
-                .populate("tweets")
+            UserTweets.findOne({user: u._id})
+                .populate("favs")
                 .then((ut) => {
                     if (ut) {
                         const tl = [];
-                        ut.tweets.forEach((t) => {
+                        ut.favs.forEach((t) => {
                             tl.push(t._id);
                         });
                         Tweet.find({
@@ -186,5 +186,5 @@ exports.getUserLikesByUN = (req, res) => {
                     res.status(400).json({ error: "Error UserTweets" })
                 );
         })
-        .catch(() => res.status(400).json({message: "Error getting User"}));
+        .catch(() => res.status(400).json({error: "Error getting user"}));
 }

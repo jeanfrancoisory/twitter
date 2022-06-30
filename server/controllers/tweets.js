@@ -1,9 +1,6 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
 const UserTweets = require('../models/UserTweets');
-const UserFavs = require("../models/UserFavs");
-const UserRetweets = require("../models/UserRetweets");
-const e = require("express");
 
 exports.postTweet = (req, res) => {
     User.findOne({_id: req.body._id})
@@ -21,8 +18,10 @@ exports.postTweet = (req, res) => {
                                 ut.tweets.push(t._id);
                                 const newUserTweets = new UserTweets({
                                     _id: ut._id,
-                                    author: ut.author,
-                                    tweets: ut.tweets
+                                    user: ut.user,
+                                    tweets: ut.tweets,
+                                    favs: ut.favs,
+                                    retweets: ut.retweets
                                 });
                                 UserTweets.updateOne({_id: ut._id}, newUserTweets)
                                     .then(() => res.status(201).json({...t._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
@@ -31,7 +30,7 @@ exports.postTweet = (req, res) => {
                                     });
                             }else {
                                 const userTweets = new UserTweets({
-                                    author: user._id,
+                                    user: user._id,
                                     tweets: [t._id]
                                 });
                                 userTweets.save()
@@ -56,7 +55,7 @@ exports.postTweet = (req, res) => {
 
 exports.getAllTweets = (req, res) => {
     UserTweets.find()
-        .populate("author")
+        .populate("user")
         .populate("tweets")
         .then((userTweets) => res.status(201).json(userTweets))
         .catch((error) => {
@@ -69,9 +68,9 @@ exports.getAllTweets = (req, res) => {
 exports.getUserTweets = (req, res) => {
     User.findOne({userName: req.params.userName})
         .then((u) => {
-            UserTweets.findOne({author: u._id})
+            UserTweets.findOne({user: u._id})
                 .populate("tweets")
-                .populate("author")
+                .populate("user")
                 .then((ut) => {
                     if (ut) {
                         res.status(201).json(ut);
@@ -93,80 +92,25 @@ exports.supprTweet = (req, res) => {
             UserTweets.findOne({author: req.params.userID})
                 .then((ut) => {
                     if (ut) {
-                        const index = ut.tweets.indexOf(ut.tweets.find(e => e.toString() === req.params.tweetID));
-                        if (index != -1) {
-                            ut.tweets.splice(index, 1);
-                            const newUserTweets = new UserTweets({
-                                _id: ut._id,
-                                author: ut.author,
-                                tweets: ut.tweets
-                            });
-                            UserTweets.updateOne({_id: ut._id}, newUserTweets)
-                                .then(() => {
-                                    tweet.favoris!==0 ?
-                                    UserFavs.findOne({user: req.params.userID})
-                                        .then((uf) => {
-                                            const index = uf.tweets.indexOf(uf.tweets.find(e => e.toString() === req.params.tweetID));
-                                            index && uf.tweets.splice(index, 1);
-                                            const newUserFavs = new UserFavs({
-                                                _id: uf._id,
-                                                user: uf.user,
-                                                tweets: uf.tweets
-                                            });
-                                            UserFavs.updateOne({_id: uf._id}, newUserFavs)
-                                                .then(() => {
-                                                    tweet.retweets!==0 ? 
-                                                    UserRetweets.findOne({_id: req.params.userID})
-                                                        .then((ur) => {
-                                                            const index = ur.tweets.indexOf(ur.tweets.find(e => e.toString() === req.params.tweetID));
-                                                            index && ur.tweets.splice(index, 1);
-                                                            const newUserRT = new UserRetweets({
-                                                                _id: uf._id,
-                                                                user: uf.user,
-                                                                tweets: uf.tweets
-                                                            });
-                                                            UserRetweets.updateOne({_id: ur._id}, newUserRT)
-                                                                .then(() => {
-                                                                    Tweet.deleteOne({_id: req.params.tweetID})
-                                                                        .then(() => res.status(201).json({message: "Tweet deleted"}))
-                                                                        .catch(() => res.status(400).json({message: "Error deleting tweet"}));
-                                                                })
-                                                                .catch(() => res.status(400).json({error: "Error Updating UserRetweets"}));
-                                                        }).catch(() => res.status(400).json({error: "Error UserRetweets"})) :
-                                                        Tweet.deleteOne({_id: req.params.tweetID})
-                                                            .then(() => res.status(201).json({message: "Tweet deleted"}))
-                                                            .catch(() => res.status(400).json({message: "Error deleting tweet"}));  
-                                                })
-                                                .catch(() => res.status(400).json({error: "Error Updating UserFavs"}));                                          
-                                        }).catch(() => res.status(400).json({error: "Error UserFavs"})) :
-                                        tweet.retweets!==0 ? 
-                                        UserRetweets.findOne({_id: req.params.userID})
+                        UserTweets.updateOne({_id: ut._id}, {$pullAll: {tweets: [{_id: req.params.tweetID}]}})
+                            .then(() => {
+                                UserTweets.updateMany({user: {$in: tweet.favorisUsers}}, {$pull: {favs: req.params.tweetID}})
+                                    .then((uf) => {
+                                        console.log(uf)
+                                        UserTweets.updateMany({user: {$in: tweet.retweetsUsers}}, {$pull: {retweets: req.params.tweetID}})
                                             .then((ur) => {
-                                                const index = ur.tweets.indexOf(ur.tweets.find(e => e.toString() === req.params.tweetID));
-                                                index && ur.tweets.splice(index, 1);
-                                                const newUserRT = new UserRetweets({
-                                                    _id: uf._id,
-                                                    user: uf.user,
-                                                    tweets: uf.tweets
-                                                });
-                                                UserRetweets.updateOne({_id: ur._id}, newUserRT)
-                                                    .then(() => {
-                                                        Tweet.deleteOne({_id: req.params.tweetID})
-                                                            .then(() => res.status(201).json({message: "Tweet deleted"}))
-                                                            .catch(() => res.status(400).json({message: "Error deleting tweet"}));
-                                                    })
-                                                    .catch(() => res.status(400).json({error: "Error Updating UserRetweets"}))
-                                            }).catch(() => res.status(400).json({error: "Error UserRetweets"})) :
-                                            Tweet.deleteOne({_id: req.params.tweetID})
-                                                .then(() => res.status(201).json({message: "Tweet deleted"}))
-                                                .catch(() => res.status(400).json({message: "Error deleting tweet"}));
-                                })
-                                .catch((error) =>{
-                                    res.status(400).json({ error: "Error deleting tweet from list" });
-                                });
-                        } else {
-                            res.status(400).json({message: "Tweet doesn't exist"});
-                        }
+                                                console.log(ur)
+                                                Tweet.deleteOne({_id: tweet._id})
+                                                    .then(() => res.status(201).json({message: "Tweet deleted"}))
+                                                    .catch(() => res.status(400).json({error: "Error deleting tweet"}));
+                                            })
+                                            .catch(() => res.status(400).json({error : "Error updating RT"}));
+                                    })
+                                    .catch(() => res.status(400).json({errr: " Error deleting favs"}));
+                            })
+                            .catch((error) =>{
+                                res.status(400).json({ error: "Error deleting tweet from list" });
+                            });
                     } else {
                         res.status(400).json({message: "Wrong user"});
                     }

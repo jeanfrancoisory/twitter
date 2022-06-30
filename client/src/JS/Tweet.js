@@ -18,7 +18,7 @@ function Tweet({tweet, refreshTweetList}) {
     React.useEffect(() => {
         setTweetLiked(tweet.liked);
         setTweetRT(tweet.rt);
-    })
+    }, []);
 
     function handleOpenPopUp() {
         setPopUpOn(!popUpOn);   
@@ -29,6 +29,7 @@ function Tweet({tweet, refreshTweetList}) {
         axios.delete(`/likes/deleteLikeTweet/${currentUserID}/${tweet._id}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
+                setTweetLiked(!tweetLiked)
             })
             .catch(err => {
                 console.error(err);
@@ -36,11 +37,12 @@ function Tweet({tweet, refreshTweetList}) {
         axios.post("/likes/postLikeTweet", {userID: currentUserID, tweetID: tweet._id}, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 console.log(response.data.message);
+                setTweetLiked(!tweetLiked);
             })
             .catch(err => {
                 console.error(err);
             });
-        setTweetLiked(!tweetLiked);
+        
     }
 
     function onClickRT() {

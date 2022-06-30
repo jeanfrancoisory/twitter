@@ -1,25 +1,27 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
-const UserRetweets = require('../models/UserRetweets');
+const UserTweets = require('../models/UserTweets');
 
 exports.addRetweet = (req, res) => {
     Tweet.findOne({_id: req.body.tweetID})
         .then((t) => {
             User.findOne({_id: req.body.userID})
                 .then((user) => {
-                    UserRetweets.findOne({user: req.body.userID})
-                        .then((ur) => {
-                            if (ur) {
-                                 if (ur.tweets.includes(t._id)) {
+                    UserTweets.findOne({user: req.body.userID})
+                        .then((ut) => {
+                            if (ut) {
+                                 if (ut.retweets.includes(t._id)) {
                                      res.status(201).json({message: "Tweet already retweeted"});
                                  } else {
-                                     ur.tweets.push(t._id);
-                                const newUserRetweets = new UserRetweets({
-                                    _id: ur._id,
-                                    user: ur.user,
-                                    tweets: ur.tweets
+                                     ut.retweets.push(t._id);
+                                const newUserTweets = new UserTweets({
+                                    _id: ut._id,
+                                    user: ut.user,
+                                    tweets: ut.tweets,
+                                    favs: ut.favs,
+                                    retweets: ut.retweets
                                 });
-                                UserRetweets.updateOne({_id: ur._id}, newUserRetweets)
+                                UserTweets.updateOne({_id: ut._id}, newUserTweets)
                                     .then(() => {
                                         t.retweets++;
                                         t.retweetsUsers.push(user._id);
@@ -37,14 +39,14 @@ exports.addRetweet = (req, res) => {
                                             .then(() => res.status(201).json({message: "Tweet retweeted"}))
                                             .catch(() => res.status(400).json({message: "Error updating Tweet's retweets"}));
                                     })
-                                    .catch(() => res.status(400).json({message: "Error updating UserRetweets"}));
+                                    .catch(() => res.status(400).json({message: "Error updating UserTweets"}));
                                  }
                             } else {
-                                const newUserRetweets = new UserRetweets({
+                                const newUserTweets = new UserTweets({
                                     user: req.body.userID,
-                                    tweets: [t._id]
+                                    retweets: [t._id]
                                 });
-                                newUserRetweets.save()
+                                newUserTweets.save()
                                     .then(() => {
                                         t.retweets++;
                                         t.retweetsUsers.push(user._id);
@@ -61,10 +63,10 @@ exports.addRetweet = (req, res) => {
                                         Tweet.updateOne({_id: t._id}, tweet)
                                             .then(() => res.status(201).json({message: "Tweet retweeted"}))
                                             .catch(() => res.status(400).json({message: "Error updating Tweet's retweet"}));})
-                                    .catch(() => res.status(400).json({message: "Error saving new UserRetweets"}));
+                                    .catch(() => res.status(400).json({message: "Error saving new UserTweets"}));
                             }
                         })
-                        .catch(() => res.status(400).json({message: "Error UserRetweets"}));
+                        .catch(() => res.status(400).json({message: "Error UserTweets"}));
                 })
                 .catch(() => res.status(400).json({message: "Error getting User"}));
             
@@ -73,18 +75,20 @@ exports.addRetweet = (req, res) => {
 }
 
 exports.supprRetweet = (req, res) => {
-    UserRetweets.findOne({user: req.params.userID})
-        .then((ur) => {
-            if (ur) {
-                const index = ur.tweets.indexOf(ur.tweets.find(e => e.toString() === req.params.tweetID));
+    UserTweets.findOne({user: req.params.userID})
+        .then((ut) => {
+            if (ut) {
+                const index = ut.retweets.indexOf(ut.retweets.find(e => e.toString() === req.params.tweetID));
                 if (index != -1) {
-                    ur.tweets.splice(index, 1);
-                    const newUserRetweets = new UserRetweets({
-                        _id: ur._id,
-                        user: ur.user,
-                        tweets: ur.tweets
+                    ut.retweets.splice(index, 1);
+                    const newUserTweets = new UserTweets({
+                        _id: ut._id,
+                        user: ut.user,
+                        tweets: ut.tweets,
+                        favs: ut.favs,
+                        retweets: ut.retweets
                     });
-                    UserRetweets.updateOne({_id: ur._id}, newUserRetweets)
+                    UserTweets.updateOne({_id: ut._id}, newUserTweets)
                         .then(() => {
                             Tweet.findOne({_id: req.params.tweetID})
                                 .then((t) => {
@@ -119,51 +123,47 @@ exports.supprRetweet = (req, res) => {
             }
         })
         .catch((error) =>
-            res.status(400).json({ error: "Error UserRetweets" })
+            res.status(400).json({ error: "Error UserTweets" })
         );
 }
 
-exports.getUserRetweetsByID = (req, res) => {
-    User.findOne({_id: req.params.userID})
-        .then((u) => {
-            UserRetweets.findOne({user: u._id})
-                .populate("tweets")
-                .then((ut) => {
-                    if (ut) {
-                        const tl = [];
-                        ut.tweets.forEach((t) => {
-                            tl.push(t._id);
-                        });
-                        Tweet.find({
-                            _id: {
-                                $in : tl
-                            }
-                        })
-                            .populate("author")
-                            .then((tweetslist) => {
-                                res.status(201).json(tweetslist);
-                            })
-                            .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
-                    } else {
-                        res.status(201).json({message: "No Tweets"});
+exports.getUserRTByID = (req, res) => {
+    UserTweets.findOne({user: req.params.userID})
+        .populate("retweets")
+        .then((ut) => {
+            if (ut) {
+                const tl = [];
+                ut.retweets.forEach((t) => {
+                    tl.push(t._id);
+                });
+                Tweet.find({
+                    _id: {
+                        $in : tl
                     }
                 })
-                .catch((error) =>
-                    res.status(400).json({ error: "Error UserReTweets" })
-                );
+                    .populate("author")
+                    .then((tweetslist) => {
+                        res.status(201).json(tweetslist);
+                    })
+                    .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
+            } else {
+                res.status(201).json({message: "No Tweets"});
+            }
         })
-        .catch(() => res.status(400).json({message: "Error getting User"}));
+        .catch((error) =>
+            res.status(400).json({ error: "Error UserTweets" })
+        );
 }
 
-exports.getUserRetweetsByUN = (req, res) => {
+exports.getUserRTByUN = (req, res) => {
     User.findOne({userName: req.params.userName})
         .then((u) => {
-            UserRetweets.findOne({user: u._id})
-                .populate("tweets")
+            UserTweets.findOne({user: u._id})
+                .populate("retweets")
                 .then((ut) => {
                     if (ut) {
                         const tl = [];
-                        ut.tweets.forEach((t) => {
+                        ut.retweets.forEach((t) => {
                             tl.push(t._id);
                         });
                         Tweet.find({
@@ -181,21 +181,21 @@ exports.getUserRetweetsByUN = (req, res) => {
                     }
                 })
                 .catch((error) =>
-                    res.status(400).json({ error: "Error UserRetweets" })
+                    res.status(400).json({ error: "Error UserTweets" })
                 );
         })
-        .catch(() => res.status(400).json({message: "Error getting User"}));
+        .catch(() => res.status(400).json({error: "Error getting User"}));
 }
 
 exports.getAllRetweets = (req, res) => {
-    UserRetweets.find()
+    UserTweets.find()
         .populate("user")
-        .then((ur) => {
-            if (ur) {
+        .then((ut) => {
+            if (ut) {
                 const userRT = [];
                 const tweetsRT = [];
-                ur.forEach((element) => {
-                    element.tweets.forEach((e) => {
+                ut.forEach((element) => {
+                    element.retweets.forEach((e) => {
                         tweetsRT.push(e._id);
                         userRT.push(element.user)
                     });
