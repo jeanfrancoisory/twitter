@@ -18,7 +18,7 @@ function Tweet({tweet, refreshTweetList}) {
     React.useEffect(() => {
         setTweetLiked(tweet.liked);
         setTweetRT(tweet.rt);
-    }, []);
+    });
 
     function handleOpenPopUp() {
         setPopUpOn(!popUpOn);   

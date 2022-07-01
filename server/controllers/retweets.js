@@ -2,6 +2,8 @@ const Tweet = require("../models/Tweet");
 const User = require("../models/User");
 const UserTweets = require('../models/UserTweets');
 
+// TODO : use UpadtaeOne
+
 exports.addRetweet = (req, res) => {
     Tweet.findOne({_id: req.body.tweetID})
         .then((t) => {

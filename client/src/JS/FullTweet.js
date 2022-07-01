@@ -17,6 +17,11 @@ function FullTweet() {
     const token = Cookies.get('token');
     const tweetContent = useRef(null);
     const [tweetValue, setTweetValue] = useState('');
+    const [refresh, setRefresh] = useState(false);
+
+    React.useEffect(() => {
+        setRefresh(!refresh);
+    }, [tweet]);
 
     const sendTweet = event => {
         event.preventDefault();
@@ -106,7 +111,7 @@ function FullTweet() {
                 <button type="submit" className="button" >Répondre</button>
             </form>
         </div>
-        <TweetList userName={tweet.userName} _id={currentUserID} tweetValue={tweetValue} mode='Responses' tweetID={tweet._id}></TweetList>
+        <TweetList userName={tweet.userName} _id={currentUserID} tweetValue={tweetValue} mode='Responses' tweetID={tweet._id} refresh={refresh} ></TweetList>
     </div>;
 }
 

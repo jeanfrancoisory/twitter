@@ -12,7 +12,7 @@ exports.postTweet = (req, res) => {
             })
             tweet.save()
                 .then((t) => {
-                    UserTweets.findOne({author: user._id})
+                    UserTweets.findOne({user: user._id})
                         .then((ut) => {
                             if(ut) {
                                 ut.tweets.push(t._id);
@@ -95,14 +95,16 @@ exports.supprTweet = (req, res) => {
                         UserTweets.updateOne({_id: ut._id}, {$pullAll: {tweets: [{_id: req.params.tweetID}]}})
                             .then(() => {
                                 UserTweets.updateMany({user: {$in: tweet.favorisUsers}}, {$pull: {favs: req.params.tweetID}})
-                                    .then((uf) => {
-                                        console.log(uf)
+                                    .then(() => {
                                         UserTweets.updateMany({user: {$in: tweet.retweetsUsers}}, {$pull: {retweets: req.params.tweetID}})
-                                            .then((ur) => {
-                                                console.log(ur)
-                                                Tweet.deleteOne({_id: tweet._id})
-                                                    .then(() => res.status(201).json({message: "Tweet deleted"}))
-                                                    .catch(() => res.status(400).json({error: "Error deleting tweet"}));
+                                            .then(() => {
+                                                Tweet.updateOne({responses: {$elemMatch: {$eq: req.params.tweetID}}}, {$pull: {responses: req.params.tweetID}})
+                                                    .then(() => {
+                                                        Tweet.deleteOne({_id: tweet._id})
+                                                            .then(() => res.status(201).json({message: "Tweet deleted"}))
+                                                            .catch(() => res.status(400).json({error: "Error deleting tweet"}));
+                                                    })
+                                                    .catch(() => res.status(400).json({error: "Error deleting tweet resposnes"}))
                                             })
                                             .catch(() => res.status(400).json({error : "Error updating RT"}));
                                     })

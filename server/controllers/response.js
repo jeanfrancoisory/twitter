@@ -11,11 +11,13 @@ exports.getTweetResponses = (req, res) => {
                 })
                 .populate("author")
                 .then((tl) => {
-                    res.status(201).json(tl);
+                    tl ?
+                    res.status(201).json(tl) : 
+                    res.status(201).json({message: "No responses"});
                 })
                 .catch(() => res.status(400).json({message: "Error getting Tweets"}));
             } else {
-                res.status(201).json({message: "No responses"});
+                res.status(400).json({error: "No such tweet"});
             }
             
         })
