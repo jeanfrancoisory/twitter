@@ -14,11 +14,60 @@ function Tweet({tweet, refreshTweetList}) {
     const [tweetRT, setTweetRT] = useState(tweet.rt);
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
+    const [userNameResponse, setUserNameResponse] = useState(null);
+    const [tweetIDREsponse, setTweetIDResponse] = useState(null);
+    const [tweetResponse, setTweetResponse] = useState(null);
+
+    function timeConverter(time) {
+        const date = Date.now() - (time);
+        const min = Math.floor(date/(60*1000));
+        const hour = Math.floor(date/(60*60*1000));
+        const day = Math.floor(date/(24*60*60*1000));
+        if(date < (60*1000)) {
+            return "A l'instant";
+        } else {
+            if(!hour) {
+                return min+' min';
+            } else {
+                if(!day) {
+                    return hour+' h '+(min-hour*60)+' min';
+                } else {
+                    return day+' j '+(hour-day*24)+' h '+(min-hour*60)+' min';
+                }
+            }
+        }
+    }
 
     React.useEffect(() => {
         setTweetLiked(tweet.liked);
         setTweetRT(tweet.rt);
     });
+
+    React.useEffect(() => {
+        tweet.isAnswerTo &&
+        axios.get(`/tweets/getOneTweet/${tweet.isAnswerTo}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                setUserNameResponse(response.data.author.userName);
+                setTweetIDResponse(response.data._id);
+                setTweetResponse({
+                    _id: response.data._id,
+                    content: response.data.content,
+                    userName: response.data.author.userName,
+                    firstName: response.data.author.firstName,
+                    lastName: response.data.author.lastName,
+                    date: timeConverter(response.data.date),
+                    userID: response.data.author._id,
+                    liked: response.data.favorisUsers.includes(currentUserID) ? true : false,
+                    rt: response.data.retweetsUsers.includes(currentUserID) ? true : false,
+                    nbFavs: response.data.favoris,
+                    nbRT: response.data.retweets,
+                    isAnswerTo: response.data.isAnswerTo
+                })
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }, []);
 
     function handleOpenPopUp() {
         setPopUpOn(!popUpOn);   
@@ -92,6 +141,16 @@ function Tweet({tweet, refreshTweetList}) {
             {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>}
         </div>
         <div className="content">
+            {tweet.isAnswerTo && <div className="isResponse">
+                <div>en réponse à </div>
+                <Link to={`/accueil/profil/${userNameResponse}`} className="linksResponse">{userNameResponse}</Link>
+                <div>
+                    <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDREsponse}`} className="linksResponse"
+                    state={{tweet: tweetResponse}}>
+                        , à ce tweet
+                    </Link>
+                </div>
+            </div>}
             <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
             <p>{tweet.content}</p>
             </Link>

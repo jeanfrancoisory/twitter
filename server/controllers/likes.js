@@ -35,6 +35,7 @@ exports.addLike = (req, res) => {
                                             retweets: t.retweets,
                                             author: t.author,
                                             responses: t.responses,
+                                            isAnswerTo: t.isAnswerTo,
                                             favorisUsers: t.favorisUsers,
                                             retweetsUsers: t.retweetsUsers
                                         });
@@ -61,6 +62,7 @@ exports.addLike = (req, res) => {
                                             retweets: t.retweets,
                                             author: t.author,
                                             responses: t.responses,
+                                            isAnswerTo: t.isAnswerTo,
                                             favorisUsers: t.favorisUsers,
                                             retweetsUsers: t.retweetsUsers
                                         });
@@ -107,6 +109,7 @@ exports.supprLike = (req, res) => {
                                         retweets: t.retweets,
                                         author: t.author,
                                         responses: t.responses,
+                                        isAnswerTo: t.isAnswerTo,
                                         favorisUsers: t.favorisUsers,
                                         retweetsUsers: t.retweetsUsers
                                     });

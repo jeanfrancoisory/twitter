@@ -42,14 +42,14 @@
 
 #datePost {
     margin-top: 1em;
-    margin-left: 1.5em;
+    margin-left: 1em;
     font-weight: 400;
     color: var(--border-color);
 }
 
 .userNameProfil {
     margin-top: 1em;
-    margin-left: 1.5em;
+    margin-left: 1em;
     font-weight: 400;
     color: var(--border-color);
 }
@@ -106,4 +106,18 @@
 
 .iconNB {
     display: flex;
+}
+
+.isResponse {
+    font-size: calc(8px + 1vmin);
+    font-weight: 500;
+    color: var(--border-color);
+    display: flex;
+    justify-content: flex-start;
+}
+
+.linksResponse {
+    margin-left: 0.5em;
+    color: var(--border-color);
+    text-decoration: none;
 }

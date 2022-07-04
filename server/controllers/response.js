@@ -1,4 +1,6 @@
 const Tweet = require("../models/Tweet");
+const User = require("../models/User");
+const UserTweets = require("../models/UserTweets");
 
 exports.getTweetResponses = (req, res) => {
     Tweet.findOne({_id: req.params.tweetID})
@@ -25,27 +27,43 @@ exports.getTweetResponses = (req, res) => {
 }
 
 exports.postResponse = (req, res) => {
-    Tweet.findOne({_id: req.body.tweetID})
-        .then((t) => {
-            Tweet.findOne({_id: req.body.responseID})
+    User.findOne({_id: req.body._id})
+        .then((user) => {
+            const tweet = new Tweet({
+                content: req.body.content,
+                date: req.body.date,
+                author: user._id,
+                isAnswerTo: req.body.tweetID
+            })
+            tweet.save()
                 .then((response) => {
-                    t.responses.push(response._id);
-                    const newTweet = new Tweet({
-                        _id: t._id,
-                        content: t.content,
-                        date: t.date,
-                        favoris: t.favoris,
-                        retweets: t.retweets,
-                        author: t.author,
-                        responses: t.responses,
-                        favorisUsers: t.favorisUsers,
-                        retweetsUsers: t.retweetsUsers
-                    });
-                    Tweet.updateOne({_id: t._id}, newTweet)
-                        .then(() => res.status(201).json({message: "Response saved"}))
-                        .catch(() => res.status(400).json({error: "Error saving response"}));
+                    Tweet.updateOne({_id: req.body.tweetID}, {$push: {responses: response._id}})
+                        .then(() => {
+                            UserTweets.findOne({user: user._id})
+                                .then((ut) => {
+                                    console.log(ut)
+                                    if(ut) {
+                                        UserTweets.updateOne({_id: ut._id}, {$push: {tweets: response._id}})
+                                            .then(() => res.status(201).json({...response._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                            .catch(() => res.status(400).json({ error: "Error updating userTweets" }));
+                                    }else {
+                                        const userTweets = new UserTweets({
+                                            user: user._id,
+                                            tweets: [response._id]
+                                        });
+                                        userTweets.save()
+                                            .then(() => res.status(201).json({...response._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                            .catch(() => res.status(400).json({ error: "Error creating userTweets" }));
+                                    }
+                                })
+                                .catch(() => res.status(400).json({ error: "Error UserTweets" }));
+                        })
+                        .catch(() => res.status(400).json({error: "Error updating response parent"}));
                 })
-                .catch(() => res.status(400).json({error: "Error getting response"}));
+                .catch(() => res.status(400).json({ error: "Error while saving tweet"}));
         })
-        .catch(() => res.status(400).json({error: "Error getting tweet"}));
+        .catch(() => res.status(400).json({ error: "User doesn't exist" }));
+}
+
+exports.getUserResponses = (req, res) => {
 }

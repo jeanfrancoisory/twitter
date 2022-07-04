@@ -108,7 +108,7 @@ exports.supprTweet = (req, res) => {
                                             })
                                             .catch(() => res.status(400).json({error : "Error updating RT"}));
                                     })
-                                    .catch(() => res.status(400).json({errr: " Error deleting favs"}));
+                                    .catch(() => res.status(400).json({error: " Error deleting favs"}));
                             })
                             .catch((error) =>{
                                 res.status(400).json({ error: "Error deleting tweet from list" });
@@ -124,3 +124,18 @@ exports.supprTweet = (req, res) => {
         .catch(() => res.status(400).json({message: "Error getting tweet"}));
 }
 
+exports.getAuthorTweet = (req, res) => {
+    Tweet.findOne({_id: req.params.tweetID})
+        .populate("author")
+        .then((t) => {
+            res.status(201).json({userName: t.author.userName});
+        })
+        .catch(() => res.status(400).json({error: "Error getting tweet"}));
+}
+
+exports.getOneTweet = (req, res) => {
+    Tweet.findOne({_id: req.params.tweetID})
+        .populate("author")
+        .then((t) => t ? res.status(201).json(t) : res.status(201).json({message : "No Tweet"}))
+        .catch(() => res.status(400).json({error: "Error getting tweetg"}));
+}

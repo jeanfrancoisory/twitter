@@ -8,6 +8,7 @@ const tweetSchema = Schema({
     favoris: {type: Number, default: 0},
     retweets: {type: Number, default: 0},
     responses: [{type: Schema.Types.ObjectId, ref: 'Tweet'}],
+    isAnswerTo: {type: Schema.Types.ObjectId, ref: 'Tweet', default: null},
     favorisUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
     retweetsUsers: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
