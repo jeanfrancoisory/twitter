@@ -1,0 +1,14 @@
+.EditProfil {
+    background-color: var(--background-color);
+    width: 130%;
+}
+
+.modifs {
+    font-size: calc(10px + 2vmin);
+    color: var(--text-color);
+}
+
+.modifs > p > input {
+    font-size: calc(10px + 2vmin);
+    color: var(--background-color);
+}

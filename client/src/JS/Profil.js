@@ -12,6 +12,7 @@ function Profil({_id}) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const token = Cookies.get('token');
+    const currentUserName = Cookies.get('userName');
     const location = useLocation();
 
     React.useEffect(() => {
@@ -25,6 +26,12 @@ function Profil({_id}) {
     });
 
     return <div className="Profil">
+        {
+            userName === currentUserName &&
+            <div className="editProfil">
+                <div className="buttonEditProfil"><Link to={`/accueil/profil/${userName}/editProfil`} className="link-menu">Editer le profil</Link></div>
+            </div>
+        }
         <div className="top" style={{border: 'none'}}>
             <div className="profil">
                 <p>{firstName}</p>

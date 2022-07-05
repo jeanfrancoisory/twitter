@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import "../CSS/File.css";
 import {useRef} from 'react';
 import TweetList from "./TweetList";
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
-function File({userName, email, firstName, lastName, _id}) {
+function File({_id}) {
     const tweet = useRef(null);
     const [tweetValue, setTweetValue] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const token = Cookies.get('token');
+    const userName = Cookies.get('userName');
+
+    React.useEffect(() => {
+        axios.get(`/user/getUserByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                setFirstName(response.data.firstName);
+                setLastName(response.data.lastName);
+            })
+            .catch((error) => console.log(error));
+    }, []);
 
     const sendTweet = event => {
         event.preventDefault();

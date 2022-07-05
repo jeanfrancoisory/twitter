@@ -21,7 +21,7 @@ code {
 }
 
 .button {
-  font-size:0.6em;
+  font-size: calc(10px + 1vmin);
   font-weight: 700;
   color: var(--text-color);
   background-image: linear-gradient(#3944e0, #0010a3);

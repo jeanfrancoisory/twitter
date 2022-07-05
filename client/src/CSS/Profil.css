@@ -5,6 +5,23 @@
     border-width: 0 1px;
 }
 
+.editProfil {
+    border-bottom: var(--border-color) solid 1px;
+    width: 100%;
+    display: flex;
+    justify-content: right;
+}
+
+.buttonEditProfil {
+    border-radius: 10px;
+    border: white solid 1px;
+    margin: 1em 2em;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: var(--text-color);
+    padding: 0.5em;
+}
+
 .choiceCategorie {
     background-color: var(--background-color);
     width: 100%;

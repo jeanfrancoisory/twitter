@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const retweetCtrl = require("../controllers/retweets");
-const auth = require("../AuthConfig/auth");
+const auth = require("../middlewares/auth");
 
 router.post("/postRTTweet", auth, retweetCtrl.addRetweet);
 router.delete("/deleteRTTweet/:userID/:tweetID", auth, retweetCtrl.supprRetweet);

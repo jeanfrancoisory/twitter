@@ -38,6 +38,7 @@ function App() {
           const _id = response.data._id;
           Cookies.set('token', response.data.token);
           Cookies.set('userID', _id);
+          Cookies.set('userName', response.data.userName);
            navigate('/accueil');
          } else {
            alert(response.data.message);
@@ -79,8 +80,8 @@ function App() {
                   <button type="button" className="button" onClick={checkID}>Sign In</button>
                 </div>}
                 {signup && <div>
-                  <p>First Name : <input type="email" onInput={e => setFirstName(e.target.value)}></input></p>
-                  <p>Last Name : <input type="email" onInput={e => setLastName(e.target.value)}></input></p>
+                  <p>First Name : <input onInput={e => setFirstName(e.target.value)}></input></p>
+                  <p>Last Name : <input onInput={e => setLastName(e.target.value)}></input></p>
                   <p>Email : <input type="email" onInput={e => setEmail(e.target.value)}></input></p>
                   <p>UserName : <input type="email" onInput={e => setUserName(e.target.value)}></input></p>
                   <p>Password : <input type="password" onInput={e => setPassword(e.target.value)}></input></p> 
