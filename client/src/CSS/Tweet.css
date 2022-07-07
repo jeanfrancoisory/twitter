@@ -6,16 +6,35 @@
     color: var(--text-color);
     border-bottom: var(--border-color) solid 1px;
     display: flex;
-    flex-direction: column;
     width: 100%;
+}
+
+.restTweet {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
     text-justify: inter-word;
+}
+
+.imageTweet {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.profilPictureTweet {
+    width: 80%;
+    height: auto;
+    margin-top: 1em;
+    border-radius: 50%;
 }
 
 .topRT {
     font-size: calc(8px + 1vmin);
     font-weight: 500;
     color: var(--border-color);
-    margin-left: 3em;
+    margin-left: 1em;
     margin-top: 0.5em;
     display: flex;
 }
@@ -32,7 +51,7 @@
 }
 
 .profil-head > div > p {
-    margin-left: 3em;
+    margin-left: 1em;
     margin-bottom: 0.5em;
 }
 
@@ -65,7 +84,7 @@
 }
  
 .content {
-    margin-left: 3em;
+    margin-left: 1em;
     margin-right: 1em;
 }
 .content p {

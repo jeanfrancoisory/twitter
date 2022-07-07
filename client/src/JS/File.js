@@ -10,12 +10,16 @@ function File({_id}) {
     const [tweetValue, setTweetValue] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [profilPicture, setProfilPicture] = useState();
     const token = Cookies.get('token');
     const userName = Cookies.get('userName');
 
     React.useEffect(() => {
         axios.get(`/user/getUserByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
+                if (response.data.profilImage)  {
+                    setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data);
+                }
                 setFirstName(response.data.firstName);
                 setLastName(response.data.lastName);
             })
@@ -35,8 +39,14 @@ function File({_id}) {
         </div>
         <div className="top">
             <div className="profil">
-                <p>{firstName}</p>
-                <p>{lastName}</p>
+                {!profilPicture ?
+                <div>
+                    <p>{firstName}</p>
+                    <p>{lastName}</p>
+                </div>
+                 :
+                <img src={profilPicture} alt="Profil" className="profilPicture"/>
+                }
                 <p>{userName}</p>
             </div>
             <div className="textBox">

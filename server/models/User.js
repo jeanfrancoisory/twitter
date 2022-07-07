@@ -7,7 +7,11 @@ const userSchema = Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
     email: {type: String, required: true, unique: true},
-    password: {type: String, required: true}
+    password: {type: String, required: true},
+    profilImage: {
+        data: {type: String},
+        contentType: {type: String}
+    }
 });
 
 userSchema.plugin(uniqueValidator);

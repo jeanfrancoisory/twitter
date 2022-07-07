@@ -130,50 +130,59 @@ function Tweet({tweet, refreshTweetList}) {
     }
 
     return <div className="Tweet">
-        {tweet.rtUser && <div className="topRT"><FontAwesomeIcon icon={faRetweet}/>  <Link to={`/accueil/profil/${tweet.rtUser}`} className="linkUNRT">{tweet.rtUser}</Link> à retweeter</div>}
-        <div className="profil-head">
-            <div id="name-date">
-                <p>{tweet.firstName} {tweet.lastName}</p>
-                <div className="userNameProfil"><Link to={`/accueil/profil/${tweet.userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{tweet.userName}</Link></div>
-                <div id="datePost">{tweet.date}</div>
-            </div>
-            <FontAwesomeIcon icon={faEllipsis} id="menuTweet" onClick={() => handleOpenPopUp()}/>
-            {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>}
+        <div className="imageTweet">
+            {tweet.profilPicture ? 
+            <img src={tweet.profilPicture} alt="PP" className="profilPictureTweet"/> :
+            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Question_Mark.svg/2560px-Question_Mark.svg.png' alt="PP" className="profilPictureTweet"/> 
+            }
+            
         </div>
-        <div className="content">
-            {tweet.isAnswerTo && <div className="isResponse">
-                <div>en réponse à </div>
-                <Link to={`/accueil/profil/${userNameResponse}`} className="linksResponse">{userNameResponse}</Link>
-                <div>
-                    <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDREsponse}`} className="linksResponse"
-                    state={{tweet: tweetResponse}}>
-                        , à ce tweet
-                    </Link>
+        <div className="restTweet">
+            {tweet.rtUser && <div className="topRT"><FontAwesomeIcon icon={faRetweet}/>  <Link to={`/accueil/profil/${tweet.rtUser}`} className="linkUNRT">{tweet.rtUser}</Link> à retweeter</div>}
+            <div className="profil-head">
+                <div id="name-date">
+                    <p>{tweet.firstName} {tweet.lastName}</p>
+                    <div className="userNameProfil"><Link to={`/accueil/profil/${tweet.userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{tweet.userName}</Link></div>
+                    <div id="datePost">{tweet.date}</div>
                 </div>
-            </div>}
-            <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
-            <p>{tweet.content}</p>
-            </Link>
-            <div className="LRT">
-                <div className="LRTParts">
-                    <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>
-                </div>
-                <div className="LRTParts" style={{color: !tweetLiked? 'var(--border-color)' : 'red'}}>
-                    <div className="Like iconNB">
-                        <FontAwesomeIcon icon={faHeart} className="iconsLRT" 
-                            onClick={() => onClickLike()}/>
-                        <div style={{marginLeft: '1em'}}> {tweet.nbFavs!==0 && tweet.nbFavs}</div>
+                <FontAwesomeIcon icon={faEllipsis} id="menuTweet" onClick={() => handleOpenPopUp()}/>
+                {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>}
+            </div>
+            <div className="content">
+                {tweet.isAnswerTo && <div className="isResponse">
+                    <div>en réponse à </div>
+                    <Link to={`/accueil/profil/${userNameResponse}`} className="linksResponse">{userNameResponse}</Link>
+                    <div>
+                        <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDREsponse}`} className="linksResponse"
+                        state={{tweet: tweetResponse}}>
+                            , à ce tweet
+                        </Link>
                     </div>
-                </div>
-                <div className="LRTParts" style={{color: !tweetRT? 'var(--border-color)' : 'green'}}>
-                    <div className="Retweet iconNB">
-                        <FontAwesomeIcon icon={faRetweet} className="iconsLRT"
-                            onClick={() => onClickRT()}/>
-                        <div style={{marginLeft: '1em'}}> {tweet.nbRT!==0 && tweet.nbRT}</div>
+                </div>}
+                <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
+                <p>{tweet.content}</p>
+                </Link>
+                <div className="LRT">
+                    <div className="LRTParts">
+                        <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>
                     </div>
-                </div>
-                <div className="LRTParts">
-                    <FontAwesomeIcon icon={faShare}  className="iconsLRT Share"/>
+                    <div className="LRTParts" style={{color: !tweetLiked? 'var(--border-color)' : 'red'}}>
+                        <div className="Like iconNB">
+                            <FontAwesomeIcon icon={faHeart} className="iconsLRT" 
+                                onClick={() => onClickLike()}/>
+                            <div style={{marginLeft: '1em'}}> {tweet.nbFavs!==0 && tweet.nbFavs}</div>
+                        </div>
+                    </div>
+                    <div className="LRTParts" style={{color: !tweetRT? 'var(--border-color)' : 'green'}}>
+                        <div className="Retweet iconNB">
+                            <FontAwesomeIcon icon={faRetweet} className="iconsLRT"
+                                onClick={() => onClickRT()}/>
+                            <div style={{marginLeft: '1em'}}> {tweet.nbRT!==0 && tweet.nbRT}</div>
+                        </div>
+                    </div>
+                    <div className="LRTParts">
+                        <FontAwesomeIcon icon={faShare}  className="iconsLRT Share"/>
+                    </div>
                 </div>
             </div>
         </div>

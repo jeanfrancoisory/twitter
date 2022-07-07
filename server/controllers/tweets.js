@@ -24,7 +24,12 @@ exports.postTweet = (req, res) => {
                                     retweets: ut.retweets
                                 });
                                 UserTweets.updateOne({_id: ut._id}, newUserTweets)
-                                    .then(() => res.status(201).json({...t._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                    .then(() => res.status(201).json({...t._doc, 
+                                        firstName: user.firstName, 
+                                        lastName: user.lastName, 
+                                        userID: user._id,
+                                        userName: user.userName,
+                                        profilPicture: user.profilImage ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
                                     .catch((error) =>{
                                         res.status(400).json({ error: "Error updating userTweets" });
                                     });

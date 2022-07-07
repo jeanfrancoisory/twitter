@@ -8,6 +8,6 @@ const mul = require("../middlewares/multer");
 router.get("/getUser/:userID", auth, userCtrl.getUser);
 router.get("/getUserByUN/:userName", auth, userCtrl.getUserByUN);
 router.put("/updateUser", auth, userCtrl.updateUser);
-router.post("/postImgUser", auth, mul.upload.single("image"), userCtrl.addImage);
+router.post("/postImgUser/:userName", auth, mul.upload.single("profilImage"), userCtrl.addImage);
 
 module.exports = router;

@@ -28,16 +28,28 @@ exports.updateUser = (req, res) => {
 }
 
 exports.addImage = (req, res) => {
-    console.log(req);
     const img = fs.readFileSync(req.file.path);
     const encode_img = img.toString('base64');
-    const finalImg = new Image({
-        data: Buffer.from(encode_img, 'base64'),
-        contentType: req.file.mimetype
-    })
-    finalImg.save()
-        .then(() => {
-            res.status(201).json({message: "Image saves"});
+    User.findOne({userName: req.params.userName})
+        .then((user) => {
+            const newUser = new User({
+                _id: user._id,
+                userName: user.userName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                password: user.password,
+                profilImage: {
+                    data: encode_img,
+                    contentType: req.file.mimetype
+                }
+            })
+            User.updateOne({_id: user._id}, newUser)
+                .then(() => res.status(201).json({profilImage: {
+                    data: encode_img,
+                    contentType: req.file.mimetype
+                }}))
+                .catch(() => res.status(400).json({error: "Error updating user"}))
         })
-        .catch(() => res.status(400).json({error: "Error saving image"}));
+        .catch(() => res.status(400).json({error: "Error fetching user"}));
 }

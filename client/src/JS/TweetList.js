@@ -34,6 +34,7 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                 axios.post('/responses/postResponse', {content: tweetValue, date: Date.now(), _id: _id, tweetID: tweetID}, { headers: {authorization: 'Bearer ' + token}})
                     .then((res) => {
                         res.data.date = timeConverter(res.data.date);
+                        console.log(res.data)
                         setTweetList([...tweetList, res.data]);
                     })
                     .catch(err => console.error(err));
@@ -74,7 +75,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                     rt: e.retweetsUsers.includes(_id) ? true : false,
                                     nbFavs: e.favoris,
                                     nbRT: e.retweets,
-                                    isAnswerTo: e.isAnswerTo
+                                    isAnswerTo: e.isAnswerTo,
+                                    profilPicture: element.user.profilImage ? 'data:'+element.user.profilImage.contentType+';base64, '+element.user.profilImage.data : null
                                 }
                                 tweets.push(t);
                             });
@@ -95,7 +97,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                 rtUser: user.userName,
                                 nbFavs: tweet.favoris,
                                 nbRT: tweet.retweets,
-                                isAnswerTo: tweet.isAnswerTo
+                                isAnswerTo: tweet.isAnswerTo,
+                                profilPicture: tweet.author.profilImage ? 'data:'+tweet.author.profilImage.contentType+';base64, '+tweet.author.profilImage.data : null
                             }
                             tweets.push(t);
                         })
@@ -120,7 +123,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         rt: e.retweetsUsers.includes(_id) ? true : false,
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
-                                        isAnswerTo: e.isAnswerTo
+                                        isAnswerTo: e.isAnswerTo,
+                                        profilPicture: response.data.user.profilImage ? 'data:'+response.data.user.profilImage.contentType+';base64, '+response.data.user.profilImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -146,7 +150,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         rt: e.retweetsUsers.includes(_id) ? true : false,
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
-                                        isAnswerTo: e.isAnswerTo
+                                        isAnswerTo: e.isAnswerTo,
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -175,7 +180,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         rtUser: userName,
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
-                                        isAnswerTo: e.isAnswerTo
+                                        isAnswerTo: e.isAnswerTo,
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -204,7 +210,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         rt: e.retweetsUsers.includes(_id) ? true : false,
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
-                                        isAnswerTo: e.isAnswerTo
+                                        isAnswerTo: e.isAnswerTo,
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
                                     }
                                     tweets.push(t);
                                 });

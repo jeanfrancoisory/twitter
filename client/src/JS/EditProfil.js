@@ -9,6 +9,7 @@ function EditProfil() {
     const userName = Cookies.get('userName');
     const token = Cookies.get('token');
     const [profilImage, setProfilImage] = useState();
+    const [profilImageServer, setProfilImageServer] = useState();
 
     React.useEffect(() => {
         axios.get(`/user/getUserByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
@@ -36,11 +37,14 @@ function EditProfil() {
     function handleSubimtImage(event) {
         event.preventDefault();
         const formData = new FormData();
-        formData.append("image", profilImage);
-        console.log(profilImage)
-        axios.post("/user/postImgUser", formData, 
+        formData.append("profilImage", profilImage);
+        axios.post(`/user/postImgUser/${userName}`, formData, 
             { headers: {authorization: 'Bearer ' + token, "Content-Type": "multipart/form-data"}})
-            .then((response) => console.log(response.data.message))
+            .then((response) => {
+                const b64 = 'data:'+response.data.profilImage.contentType+';base64, ';
+                const imgStr =  response.data.profilImage.data;
+                setProfilImageServer(b64+imgStr);
+            })
             .catch((error) => console.log(error));
     }
 
@@ -50,6 +54,7 @@ function EditProfil() {
                 <p>Photo de Profil : <input type="file" name="image" onChange={handleProfilImageSelected} /></p>
             </div>
             <button type="submit" className="button" >Enregistrer</button>
+            <img src={profilImageServer} alt="alt text"/>
         </form>
         <form onSubmit={editProfil}>
             <div className="modifs fnModif">
