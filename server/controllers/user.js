@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const Image = require("../models/Image");
 const fs = require("fs");
 
 exports.getUser = (req, res) => {

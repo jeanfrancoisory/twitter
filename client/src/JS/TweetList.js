@@ -34,7 +34,6 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                 axios.post('/responses/postResponse', {content: tweetValue, date: Date.now(), _id: _id, tweetID: tweetID}, { headers: {authorization: 'Bearer ' + token}})
                     .then((res) => {
                         res.data.date = timeConverter(res.data.date);
-                        console.log(res.data)
                         setTweetList([...tweetList, res.data]);
                     })
                     .catch(err => console.error(err));
@@ -43,6 +42,7 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                 .post('/tweets/postTweet', {content: tweetValue, date: Date.now(), _id: _id}, { headers: {authorization: 'Bearer ' + token}})
                 .then((response) => {
                     response.data.date = timeConverter(response.data.date);
+                    console.log(response.data)
                     setTweetList([...tweetList, response.data]);
                 })
                 .catch(err => {
@@ -118,7 +118,7 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         firstName: response.data.user.firstName,
                                         lastName: response.data.user.lastName,
                                         date: timeConverter(e.date),
-                                        userID: e.userID,
+                                        userID: response.data.user._id,
                                         liked: e.favorisUsers.includes(_id) ? true : false,
                                         rt: e.retweetsUsers.includes(_id) ? true : false,
                                         nbFavs: e.favoris,

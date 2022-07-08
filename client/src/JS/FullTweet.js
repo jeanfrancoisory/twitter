@@ -19,6 +19,7 @@ function FullTweet() {
     const [tweetValue, setTweetValue] = useState('');
     const [refresh, setRefresh] = useState(false);
 
+    // Refresh the tweetList when from one tweet to another but with the same author
     React.useEffect(() => {
         setRefresh(!refresh);
     }, [tweet]);
@@ -72,9 +73,16 @@ function FullTweet() {
         <div className="topFullTweet">
             <div className="profil-head-full">
                 <div id="name-date-full">
-                    <p>{tweet.firstName} {tweet.lastName}</p>
-                    <div className="userNameProfil-full"><Link to={`/accueil/profil/${tweet.userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{tweet.userName}</Link></div>
-                    <div id="datePost-full">{tweet.date}</div>
+                    {tweet.profilPicture ? 
+                    <img src={tweet.profilPicture} alt="PP" className="profilPictureFullTweet"/> :
+                    <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Question_Mark.svg/2560px-Question_Mark.svg.png' alt="PP" className="profilPictureFullTweet"/> 
+                    }
+                    <div>
+                        <div className="userLFName-full">{tweet.firstName} {tweet.lastName}</div>
+                        <div className="userNameProfil-full"><Link to={`/accueil/profil/${tweet.userName}`} className="link-menu" style={{color: 'var(--border-color)'}}>{tweet.userName}</Link></div>
+                        <div id="datePost-full">{tweet.date}</div>
+                    </div>
+                    
                 </div>
                 {/* <FontAwesomeIcon icon={faEllipsis} id="menuTweet" onClick={() => handleOpenPopUp()}/>
                 {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>} */}

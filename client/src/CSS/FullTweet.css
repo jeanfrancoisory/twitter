@@ -9,7 +9,6 @@
 }
 
 .topFullTweet {
-    height: 10em;
     border-bottom: var(--border-color) solid 1px;
 }
 
@@ -17,6 +16,7 @@
     display: flex;
     justify-content: space-between;
     font-size: calc(10px + 1vmin);
+    height: 40%;
 }
 
 .profil-head-full > div > p {
@@ -28,16 +28,30 @@
     display: flex;
 }
 
+#name-date-full > div {
+    display: flex;
+    flex-direction: column
+}
+
+.profilPictureFullTweet {
+    border-radius: 50%;
+    width: 5em;
+    height: auto;
+    margin: 1em;
+}
+
 #datePost-full {
-    margin-top: 1em;
-    margin-left: 1.5em;
+    margin-top: 0.5em;
     font-weight: 400;
     color: var(--border-color);
 }
 
-.userNameProfil-full {
+.userLFName-full {
     margin-top: 1em;
-    margin-left: 1.5em;
+}
+
+.userNameProfil-full {
+    margin-top: 0.5em;
     font-weight: 400;
     color: var(--border-color);
 }

@@ -1,7 +1,7 @@
 .PopUpTweet {
     position: absolute;
     top: 2em;
-    left: 37vw;
+    left: 33vw;
     width: auto;
     height: auto;
     background-color: var(--background-color);

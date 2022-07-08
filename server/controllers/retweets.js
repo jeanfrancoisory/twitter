@@ -97,7 +97,7 @@ exports.supprRetweet = (req, res) => {
                             Tweet.findOne({_id: req.params.tweetID})
                                 .then((t) => {
                                     const index = t.retweetsUsers.indexOf(t.retweetsUsers.find(e => e.toString() === req.params.userID));
-                                    index && t.retweetsUsers.splice(index, 1);
+                                    index!==-1 && t.retweetsUsers.splice(index, 1);
                                     t.retweets--;
                                     const tweet = new Tweet({
                                         _id: t._id,

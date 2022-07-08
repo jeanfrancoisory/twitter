@@ -29,7 +29,7 @@ exports.postTweet = (req, res) => {
                                         lastName: user.lastName, 
                                         userID: user._id,
                                         userName: user.userName,
-                                        profilPicture: user.profilImage ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
+                                        profilPicture: user.profilImage.data ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
                                     .catch((error) =>{
                                         res.status(400).json({ error: "Error updating userTweets" });
                                     });
@@ -39,7 +39,12 @@ exports.postTweet = (req, res) => {
                                     tweets: [t._id]
                                 });
                                 userTweets.save()
-                                    .then(() => res.status(201).json({...t._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                    .then(() => res.status(201).json({...t._doc, 
+                                        firstName: user.firstName, 
+                                        lastName: user.lastName, 
+                                        userID: user._id,
+                                        userName: user.userName,
+                                        profilPicture: user.profilImage.data ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
                                     .catch((error) =>{
                                         res.status(400).json({ error: "Error creating userTweets" });
                                     });

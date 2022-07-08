@@ -38,10 +38,10 @@ function Tweet({tweet, refreshTweetList}) {
         }
     }
 
-    React.useEffect(() => {
-        setTweetLiked(tweet.liked);
-        setTweetRT(tweet.rt);
-    });
+    // React.useEffect(() => {
+    //     setTweetLiked(tweet.liked);
+    //     setTweetRT(tweet.rt);
+    // });
 
     React.useEffect(() => {
         tweet.isAnswerTo &&
@@ -61,7 +61,8 @@ function Tweet({tweet, refreshTweetList}) {
                     rt: response.data.retweetsUsers.includes(currentUserID) ? true : false,
                     nbFavs: response.data.favoris,
                     nbRT: response.data.retweets,
-                    isAnswerTo: response.data.isAnswerTo
+                    isAnswerTo: response.data.isAnswerTo,
+                    profilPicture: response.data.author.profilImage ? 'data:'+response.data.author.profilImage.contentType+';base64, '+response.data.author.profilImage.data : null
                 })
             })
             .catch(err => {
@@ -125,7 +126,7 @@ function Tweet({tweet, refreshTweetList}) {
                     console.error(err);
                 });
         } else {
-            console.log('NOt your tweet')
+            console.log('Not your tweet')
         }
     }
 

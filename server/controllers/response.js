@@ -41,10 +41,14 @@ exports.postResponse = (req, res) => {
                         .then(() => {
                             UserTweets.findOne({user: user._id})
                                 .then((ut) => {
-                                    console.log(ut)
                                     if(ut) {
                                         UserTweets.updateOne({_id: ut._id}, {$push: {tweets: response._id}})
-                                            .then(() => res.status(201).json({...response._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                            .then(() => res.status(201).json({...response._doc, 
+                                                firstName: user.firstName, 
+                                                lastName: user.lastName, 
+                                                userID: user._id,
+                                                userName: user.userName,
+                                                profilPicture: user.profilImage.data ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
                                             .catch(() => res.status(400).json({ error: "Error updating userTweets" }));
                                     }else {
                                         const userTweets = new UserTweets({
@@ -52,7 +56,12 @@ exports.postResponse = (req, res) => {
                                             tweets: [response._id]
                                         });
                                         userTweets.save()
-                                            .then(() => res.status(201).json({...response._doc, firstName: user.firstName, lastName: user.lastName, userID: user._id}))
+                                            .then(() => res.status(201).json({...response._doc, 
+                                                firstName: user.firstName, 
+                                                lastName: user.lastName, 
+                                                userID: user._id,
+                                                userName: user.userName,
+                                                profilPicture: user.profilImage.data ? 'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data : null}))
                                             .catch(() => res.status(400).json({ error: "Error creating userTweets" }));
                                     }
                                 })
