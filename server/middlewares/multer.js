@@ -1,11 +1,20 @@
 const multer = require("multer");
 
-const storage = multer.diskStorage({
+const storageProfil = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, './uploads')
+      cb(null, './uploads/PP')
     },
     filename: function (req, file, cb) {
       cb(null, file.fieldname + '-' + req.params.userName)
+    }
+  })
+
+const storageTweet = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads/PT')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + req.params.tweetID)
     }
   })
 
@@ -18,8 +27,14 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-    storage: storage,
+    storage: storageProfil,
     fileFilter: fileFilter
 });
 
+const uploadTweet = multer({
+  storage: storageTweet,
+  fileFilter: fileFilter
+});
+
 exports.upload = upload;
+exports.uploadTweet = uploadTweet;

@@ -1,6 +1,7 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
 const UserTweets = require('../models/UserTweets');
+const fs = require("fs");
 
 exports.postTweet = (req, res) => {
     User.findOne({_id: req.body._id})
@@ -61,6 +62,41 @@ exports.postTweet = (req, res) => {
         .catch((error) =>
             res.status(400).json({ error: "User doesn't exist" })
         );
+}
+
+exports.addImageTweet = (req, res) => {
+    const img = fs.readFileSync(req.file.path);
+    const encode_img = img.toString('base64');
+    Tweet.findOne({_id: req.params.tweetID})
+        .then((tweet) => {
+            const n = new Tweet({
+                ...tweet,
+            });
+            console.log(n)
+            const newTweet = new Tweet({
+                _id: tweet._id,
+                content: tweet.content,
+                date: tweet.date,
+                author: tweet.author,
+                favoris: tweet.favoris,
+                retweets: tweet.retweets,
+                responses: tweet.responses,
+                isAnswerTo: tweet.isAnswerTo,
+                favorisUsers: tweet.favorisUsers,
+                retweetsUsers: tweet.retweetsUsers,
+                tweetImage: {
+                    data: encode_img,
+                    contentType: req.file.mimetype
+                }
+            })
+            Tweet.updateOne({_id: tweet._id}, newTweet)
+                .then(() => res.status(201).json({tweetImage: {
+                    data: encode_img,
+                    contentType: req.file.mimetype
+                }}))
+                .catch(() => res.status(400).json({error: "Error updating tweet"}))
+        })
+        .catch(() => res.status(400).json({error: "Error fetching tweet"}));
 }
 
 exports.getAllTweets = (req, res) => {

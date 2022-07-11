@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState} from "react";
 import "../CSS/FullTweet.css";
 import { useLocation, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +6,7 @@ import { faHeart, faRetweet, faComment, faShare } from '@fortawesome/free-solid-
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import TweetList from "./TweetList";
+import InputTweet from "./InputTweet";
 
 function FullTweet() {
 
@@ -15,7 +16,6 @@ function FullTweet() {
     const [tweetRT, setTweetRT] = useState(tweet.rt);
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
-    const tweetContent = useRef(null);
     const [tweetValue, setTweetValue] = useState('');
     const [refresh, setRefresh] = useState(false);
 
@@ -24,11 +24,8 @@ function FullTweet() {
         setRefresh(!refresh);
     }, [tweet]);
 
-    const sendTweet = event => {
-        event.preventDefault();
-        tweetContent.current.value !== '' &&
-        setTweetValue(tweetContent.current.value);
-        event.target.reset();
+    function sendTweetValue(value) {
+        setTweetValue(value);
     }
 
     function onClickLike() {
@@ -114,10 +111,7 @@ function FullTweet() {
             </div>
         </div>
         <div className="textBox-full">
-            <form onSubmit={sendTweet}>
-                <input placeholder="Réponse" ref={tweetContent}></input>
-                <button type="submit" className="button" >Répondre</button>
-            </form>
+            <InputTweet sendTweetValue={sendTweetValue} mode={1}/>
         </div>
         <TweetList userName={tweet.userName} _id={currentUserID} tweetValue={tweetValue} mode='Responses' tweetID={tweet._id} refresh={refresh} ></TweetList>
     </div>;

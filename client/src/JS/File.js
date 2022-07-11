@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "../CSS/File.css";
-import {useRef} from 'react';
 import TweetList from "./TweetList";
+import InputTweet from "./InputTweet";
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
 function File({_id}) {
-    const tweet = useRef(null);
-    const [tweetValue, setTweetValue] = useState('');
+    const [tweetValue, setTweetValue] = useState(null);
+    const [tweetMedia, setTweetMedia] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [profilPicture, setProfilPicture] = useState();
@@ -26,11 +26,9 @@ function File({_id}) {
             .catch((error) => console.log(error));
     }, []);
 
-    const sendTweet = event => {
-        event.preventDefault();
-        tweet.current.value !== '' &&
-        setTweetValue(tweet.current.value);
-        event.target.reset();
+    function sendTweetValue(content, image) {
+        image && setTweetMedia(image);
+        setTweetValue(content);
     }
 
     return <div className="File">
@@ -50,13 +48,10 @@ function File({_id}) {
                 <p>{userName}</p>
             </div>
             <div className="textBox">
-                <form onSubmit={sendTweet}>
-                    <input placeholder="Quoi de neuf ?" ref={tweet}></input>
-                    <button type="submit" className="button" >Tweeter</button>
-                </form>
+                <InputTweet sendTweetValue={sendTweetValue} mode={0}/>
             </div>
         </div>
-        <TweetList userName={userName} _id={_id} tweetValue={tweetValue} mode='Home'></TweetList>
+        <TweetList userName={userName} _id={_id} tweetValue={tweetValue} tweetMedia={tweetMedia} mode='Home'></TweetList>
     </div>;
 }
 export default File;

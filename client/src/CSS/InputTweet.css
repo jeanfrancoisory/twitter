@@ -1,0 +1,45 @@
+.InputTweet {
+    height: 100%;
+}
+
+.InputTweet > form {
+    height: 100%;
+    display: flex;
+    justify-content: right;
+    flex-direction: column;
+}
+
+form > input {
+    width: 80%;
+    height: 60%;
+    margin: 1% 5%;
+    background-color: var(--background-color);
+    border: none;
+    border-bottom: #3944e0 solid 2px;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+form > input::placeholder {
+    text-decoration: none;
+    font-size: calc(10px + 1vmin);
+    font-weight: 700;
+    color: var(--text-color);
+    
+}
+
+form >input:focus {
+    outline: none;
+}
+
+.iconMedia {
+    color: var(--blue-color);
+    margin: 0 5%;
+    cursor: pointer;
+}
+
+.imageTweetUploaded {
+    max-width: 90%;
+    height: auto;
+}

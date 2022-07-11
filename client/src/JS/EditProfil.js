@@ -36,6 +36,7 @@ function EditProfil() {
 
     function handleSubimtImage(event) {
         event.preventDefault();
+        console.log(profilImage)
         const formData = new FormData();
         formData.append("profilImage", profilImage);
         axios.post(`/user/postImgUser/${userName}`, formData, 

@@ -163,6 +163,7 @@ function Tweet({tweet, refreshTweetList}) {
                 <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
                 <p>{tweet.content}</p>
                 </Link>
+                {tweet.tweetImage && <img src={tweet.tweetImage} alt="imgTweet"/>}
                 <div className="LRT">
                     <div className="LRTParts">
                         <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>

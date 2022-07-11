@@ -4,7 +4,7 @@ import Tweet from "./Tweet"
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
+function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refresh}) {
     const [tweetList, setTweetList] = React.useState([]);
     const token = Cookies.get('token');
 
@@ -31,7 +31,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
     React.useEffect(() => {
         if(tweetValue) {
             if(mode === 'Responses' && tweetID) {
-                axios.post('/responses/postResponse', {content: tweetValue, date: Date.now(), _id: _id, tweetID: tweetID}, { headers: {authorization: 'Bearer ' + token}})
+                axios.post('/responses/postResponse', {content: tweetValue, date: Date.now(), _id: _id, tweetID: tweetID}, 
+                { headers: {authorization: 'Bearer ' + token}})
                     .then((res) => {
                         res.data.date = timeConverter(res.data.date);
                         setTweetList([...tweetList, res.data]);
@@ -39,11 +40,27 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                     .catch(err => console.error(err));
             } else {
                 axios
-                .post('/tweets/postTweet', {content: tweetValue, date: Date.now(), _id: _id}, { headers: {authorization: 'Bearer ' + token}})
+                .post('/tweets/postTweet', {content: tweetValue, date: Date.now(), _id: _id}, 
+                { headers: {authorization: 'Bearer ' + token}})
                 .then((response) => {
                     response.data.date = timeConverter(response.data.date);
-                    console.log(response.data)
-                    setTweetList([...tweetList, response.data]);
+                    if (tweetMedia) {
+                        const formData = new FormData();
+                        formData.append("tweetImage", tweetMedia);
+                        axios.post(`/tweets/addtweetImage/${response.data._id}`, formData, 
+                            { headers: {authorization: 'Bearer ' + token, "Content-Type": "multipart/form-data"}})
+                            .then((res) => {
+                                const newTweet = {
+                                    ...response.data,
+                                    tweetImage: 'data:'+res.data.tweetImage.contentType+';base64, '+res.data.tweetImage.data
+                                }
+                                setTweetList([...tweetList, newTweet]);
+                            })
+                            .catch((error) => console.log(error));
+                    } else {
+                        console.log('no image')
+                        setTweetList([...tweetList, response.data]);
+                    }
                 })
                 .catch(err => {
                     console.error(err);
@@ -76,7 +93,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                     nbFavs: e.favoris,
                                     nbRT: e.retweets,
                                     isAnswerTo: e.isAnswerTo,
-                                    profilPicture: element.user.profilImage ? 'data:'+element.user.profilImage.contentType+';base64, '+element.user.profilImage.data : null
+                                    profilPicture: element.user.profilImage ? 'data:'+element.user.profilImage.contentType+';base64, '+element.user.profilImage.data : null,
+                                    tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
                                 }
                                 tweets.push(t);
                             });
@@ -98,7 +116,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                 nbFavs: tweet.favoris,
                                 nbRT: tweet.retweets,
                                 isAnswerTo: tweet.isAnswerTo,
-                                profilPicture: tweet.author.profilImage ? 'data:'+tweet.author.profilImage.contentType+';base64, '+tweet.author.profilImage.data : null
+                                profilPicture: tweet.author.profilImage ? 'data:'+tweet.author.profilImage.contentType+';base64, '+tweet.author.profilImage.data : null,
+                                tweetImage: tweet.tweetImage ? 'data:'+tweet.tweetImage.contentType+';base64, '+tweet.tweetImage.data : null
                             }
                             tweets.push(t);
                         })
@@ -124,7 +143,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
                                         isAnswerTo: e.isAnswerTo,
-                                        profilPicture: response.data.user.profilImage ? 'data:'+response.data.user.profilImage.contentType+';base64, '+response.data.user.profilImage.data : null
+                                        profilPicture: response.data.user.profilImage ? 'data:'+response.data.user.profilImage.contentType+';base64, '+response.data.user.profilImage.data : null,
+                                        tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -151,7 +171,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
                                         isAnswerTo: e.isAnswerTo,
-                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null,
+                                        tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -181,7 +202,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
                                         isAnswerTo: e.isAnswerTo,
-                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null,
+                                        tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
                                     }
                                     tweets.push(t);
                                 });
@@ -211,7 +233,8 @@ function TweetList({userName, _id, tweetValue, mode, tweetID, refresh}) {
                                         nbFavs: e.favoris,
                                         nbRT: e.retweets,
                                         isAnswerTo: e.isAnswerTo,
-                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null
+                                        profilPicture: e.author.profilImage ? 'data:'+e.author.profilImage.contentType+';base64, '+e.author.profilImage.data : null,
+                                        tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
                                     }
                                     tweets.push(t);
                                 });

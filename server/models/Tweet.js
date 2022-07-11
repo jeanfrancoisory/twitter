@@ -10,7 +10,11 @@ const tweetSchema = Schema({
     responses: [{type: Schema.Types.ObjectId, ref: 'Tweet'}],
     isAnswerTo: {type: Schema.Types.ObjectId, ref: 'Tweet', default: null},
     favorisUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    retweetsUsers: [{type: Schema.Types.ObjectId, ref: 'User'}]
+    retweetsUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    tweetImage: {
+        data: {type: String},
+        contentType: {type: String}
+    }
 });
 
 module.exports = mongoose.model("Tweet", tweetSchema);
