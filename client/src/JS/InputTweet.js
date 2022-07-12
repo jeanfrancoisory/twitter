@@ -9,15 +9,13 @@ function InputTweet({sendTweetValue, mode}) {
 
     const sendTweet = event => {
         event.preventDefault();
-        tweet.current.value !== '' &&
+        tweet.current.value &&
         imageTweet ? sendTweetValue(tweet.current.value, imageTweet) : sendTweetValue(tweet.current.value, null);
         setImageTweet(null)
         event.target.reset();
     }   
 
     function handleImageSelected(e) {
-        // sendImageTweet(e.target.files[0]);
-        console.log(e.target.files[0])
         setImageTweet(e.target.files[0]);
     }
     

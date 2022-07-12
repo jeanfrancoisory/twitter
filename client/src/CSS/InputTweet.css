@@ -40,6 +40,7 @@ form >input:focus {
 }
 
 .imageTweetUploaded {
-    max-width: 90%;
+    max-width: 80%;
     height: auto;
+    margin: 1% 5%;
 }

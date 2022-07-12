@@ -11,6 +11,7 @@ function Profil({_id}) {
     const {userName} = useParams();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [profilPicture, setProfilPicture] = useState(null);
     const token = Cookies.get('token');
     const currentUserName = Cookies.get('userName');
     const location = useLocation();
@@ -20,6 +21,7 @@ function Profil({_id}) {
         .then((response) => {
             setFirstName(response.data.firstName);
             setLastName(response.data.lastName);
+            response.data.profilImage && setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data);
             location.pathname.includes('likes') ? setMode('profilLikes') : location.pathname.includes('retweets') ? setMode('profilRT') : setMode('profilTweets');
         })
         .catch((error) => console.log(error));
@@ -34,9 +36,12 @@ function Profil({_id}) {
         }
         <div className="top" style={{border: 'none'}}>
             <div className="profil">
-                <p>{firstName}</p>
-                <p>{lastName}</p>
-                <p>{userName}</p>
+                <div style={{display:'flex', flexDirection: 'row', gap: '0.5em', marginBottom: '1em'}}>
+                    <p>{firstName}</p>
+                    <p>{lastName}</p>
+                    <p style={{color: 'var(--border-color)'}}>{userName}</p>
+                </div>
+                {profilPicture && <img src={profilPicture} alt="Profil" className="profilPicture"/>}
             </div>
         </div>
         <div className="choiceCategorie">

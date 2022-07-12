@@ -17,6 +17,7 @@ function FullTweet() {
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
     const [tweetValue, setTweetValue] = useState('');
+    const [tweetMedia, setTweetMedia] = useState(null);
     const [refresh, setRefresh] = useState(false);
 
     // Refresh the tweetList when from one tweet to another but with the same author
@@ -24,8 +25,9 @@ function FullTweet() {
         setRefresh(!refresh);
     }, [tweet]);
 
-    function sendTweetValue(value) {
-        setTweetValue(value);
+    function sendTweetValue(content, image) {
+        image && setTweetMedia(image);
+        setTweetValue(content);
     }
 
     function onClickLike() {
@@ -86,6 +88,7 @@ function FullTweet() {
             </div>
             <div className="content-full">
                 <p>{tweet.content}</p>
+                {tweet.tweetImage && <img src={tweet.tweetImage} alt="imgTweet"/>}
                 <div className="LRT-full">
                     <div className="LRTParts-full">
                         <FontAwesomeIcon icon={faComment} className="iconsLRT-full Response-full"/>
@@ -113,7 +116,7 @@ function FullTweet() {
         <div className="textBox-full">
             <InputTweet sendTweetValue={sendTweetValue} mode={1}/>
         </div>
-        <TweetList userName={tweet.userName} _id={currentUserID} tweetValue={tweetValue} mode='Responses' tweetID={tweet._id} refresh={refresh} ></TweetList>
+        <TweetList userName={tweet.userName} _id={currentUserID} tweetValue={tweetValue} tweetMedia={tweetMedia} mode='Responses' tweetID={tweet._id} refresh={refresh} ></TweetList>
     </div>;
 }
 

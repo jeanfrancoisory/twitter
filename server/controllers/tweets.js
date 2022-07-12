@@ -69,10 +69,6 @@ exports.addImageTweet = (req, res) => {
     const encode_img = img.toString('base64');
     Tweet.findOne({_id: req.params.tweetID})
         .then((tweet) => {
-            const n = new Tweet({
-                ...tweet,
-            });
-            console.log(n)
             const newTweet = new Tweet({
                 _id: tweet._id,
                 content: tweet.content,

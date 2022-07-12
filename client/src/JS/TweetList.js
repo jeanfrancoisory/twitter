@@ -33,9 +33,24 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
             if(mode === 'Responses' && tweetID) {
                 axios.post('/responses/postResponse', {content: tweetValue, date: Date.now(), _id: _id, tweetID: tweetID}, 
                 { headers: {authorization: 'Bearer ' + token}})
-                    .then((res) => {
-                        res.data.date = timeConverter(res.data.date);
-                        setTweetList([...tweetList, res.data]);
+                    .then((response) => {
+                        response.data.date = timeConverter(response.data.date);
+                        if (tweetMedia) {
+                            const formData = new FormData();
+                            formData.append("imageTweet", tweetMedia);
+                            axios.post(`/tweets/addImageTweet/${response.data._id}`, formData, 
+                                { headers: {authorization: 'Bearer ' + token, "Content-Type": "multipart/form-data"}})
+                                .then((res) => {
+                                    const newTweet = {
+                                        ...response.data,
+                                        tweetImage: 'data:'+res.data.tweetImage.contentType+';base64, '+res.data.tweetImage.data
+                                    }
+                                    setTweetList([...tweetList, newTweet]);
+                                })
+                                .catch((error) => console.log(error));
+                        } else {
+                            setTweetList([...tweetList, response.data]);
+                        }
                     })
                     .catch(err => console.error(err));
             } else {
@@ -46,8 +61,8 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                     response.data.date = timeConverter(response.data.date);
                     if (tweetMedia) {
                         const formData = new FormData();
-                        formData.append("tweetImage", tweetMedia);
-                        axios.post(`/tweets/addtweetImage/${response.data._id}`, formData, 
+                        formData.append("imageTweet", tweetMedia);
+                        axios.post(`/tweets/addImageTweet/${response.data._id}`, formData, 
                             { headers: {authorization: 'Bearer ' + token, "Content-Type": "multipart/form-data"}})
                             .then((res) => {
                                 const newTweet = {
@@ -58,7 +73,6 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                             })
                             .catch((error) => console.log(error));
                     } else {
-                        console.log('no image')
                         setTweetList([...tweetList, response.data]);
                     }
                 })

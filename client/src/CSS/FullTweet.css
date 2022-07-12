@@ -77,6 +77,11 @@
     color: var(--text-color);
 }
 
+.content-full > img {
+    max-width: 100%;
+    height: auto;
+}
+
 .LRT-full {
     height: 1.5em;
     display: flex;
@@ -113,7 +118,7 @@
 
 .textBox-full {
     width: 100%;
-    height: 10em;
+    min-height: 10em;
     border-bottom: var(--border-color) solid 1px;
 }
 
