@@ -52,3 +52,9 @@ exports.addImage = (req, res) => {
         })
         .catch(() => res.status(400).json({error: "Error fetching user"}));
 }
+
+exports.search = (req, res) => {
+    User.find({userName: {$regex: req.params.search}})
+        .then((users) => res.status(201).json(users))
+        .catch(() => res.status(400).json({error: "Error finding users"}));
+}

@@ -9,5 +9,6 @@ router.get("/getUser/:userID", auth, userCtrl.getUser);
 router.get("/getUserByUN/:userName", auth, userCtrl.getUserByUN);
 router.put("/updateUser", auth, userCtrl.updateUser);
 router.post("/postImgUser/:userName", auth, mul.upload.single("profilImage"), userCtrl.addImage);
+router.get("/getUserSearch/:search", userCtrl.search);
 
 module.exports = router;
