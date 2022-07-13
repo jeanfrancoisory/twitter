@@ -20,10 +20,62 @@ function FullTweet() {
     const [tweetMedia, setTweetMedia] = useState(null);
     const [refresh, setRefresh] = useState(false);
 
+    const [userNameResponse, setUserNameResponse] = useState(null);
+    const [tweetIDREsponse, setTweetIDResponse] = useState(null);
+    const [tweetResponse, setTweetResponse] = useState(null);
+
+    function timeConverter(time) {
+        const date = Date.now() - (time);
+        const min = Math.floor(date/(60*1000));
+        const hour = Math.floor(date/(60*60*1000));
+        const day = Math.floor(date/(24*60*60*1000));
+        if(date < (60*1000)) {
+            return "A l'instant";
+        } else {
+            if(!hour) {
+                return min+' min';
+            } else {
+                if(!day) {
+                    return hour+' h '+(min-hour*60)+' min';
+                } else {
+                    return day+' j '+(hour-day*24)+' h '+(min-hour*60)+' min';
+                }
+            }
+        }
+    }
+
     // Refresh the tweetList when from one tweet to another but with the same author
     React.useEffect(() => {
         setRefresh(!refresh);
     }, [tweet]);
+
+    React.useEffect(() => {
+        tweet.isAnswerTo &&
+        axios.get(`/tweets/getOneTweet/${tweet.isAnswerTo}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                setUserNameResponse(response.data.author.userName);
+                setTweetIDResponse(response.data._id);
+                setTweetResponse({
+                    _id: response.data._id,
+                    content: response.data.content,
+                    userName: response.data.author.userName,
+                    firstName: response.data.author.firstName,
+                    lastName: response.data.author.lastName,
+                    date: timeConverter(response.data.date),
+                    userID: response.data.author._id,
+                    liked: response.data.favorisUsers.includes(currentUserID) ? true : false,
+                    rt: response.data.retweetsUsers.includes(currentUserID) ? true : false,
+                    nbFavs: response.data.favoris,
+                    nbRT: response.data.retweets,
+                    isAnswerTo: response.data.isAnswerTo,
+                    profilPicture: response.data.author.profilImage ? 'data:'+response.data.author.profilImage.contentType+';base64, '+response.data.author.profilImage.data : null,
+                    tweetImage: response.data.tweetImage ? 'data:'+response.data.tweetImage.contentType+';base64, '+response.data.tweetImage.data : null
+                })
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }, []);
 
     function sendTweetValue(content, image) {
         image && setTweetMedia(image);
@@ -87,6 +139,16 @@ function FullTweet() {
                 {popUpOn && <PopUpTweet closePopUp={handleOpenPopUp} supprTweet={supprTweet}></PopUpTweet>} */}
             </div>
             <div className="content-full">
+                {tweet.isAnswerTo && <div className="isResponse">
+                    <div>en réponse à </div>
+                    <Link to={`/accueil/profil/${userNameResponse}`} className="linksResponse">{userNameResponse}</Link>
+                    <div>
+                        <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDREsponse}`} className="linksResponse"
+                        state={{tweet: tweetResponse}}>
+                            , à ce tweet
+                        </Link>
+                    </div>
+                </div>}
                 <p>{tweet.content}</p>
                 {tweet.tweetImage && <img src={tweet.tweetImage} alt="imgTweet"/>}
                 <div className="LRT-full">

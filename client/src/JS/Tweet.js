@@ -62,7 +62,8 @@ function Tweet({tweet, refreshTweetList}) {
                     nbFavs: response.data.favoris,
                     nbRT: response.data.retweets,
                     isAnswerTo: response.data.isAnswerTo,
-                    profilPicture: response.data.author.profilImage ? 'data:'+response.data.author.profilImage.contentType+';base64, '+response.data.author.profilImage.data : null
+                    profilPicture: response.data.author.profilImage ? 'data:'+response.data.author.profilImage.contentType+';base64, '+response.data.author.profilImage.data : null,
+                    tweetImage: response.data.tweetImage ? 'data:'+response.data.tweetImage.contentType+';base64, '+response.data.tweetImage.data : null
                 })
             })
             .catch(err => {
