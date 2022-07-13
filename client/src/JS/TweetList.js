@@ -84,6 +84,7 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
     }, [tweetValue]);
 
     React.useEffect(() => {
+        setTweetList([]);
         if (userName) {
             switch (mode) {
                 case 'Home' :

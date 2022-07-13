@@ -21,7 +21,7 @@ function Profil({_id}) {
         .then((response) => {
             setFirstName(response.data.firstName);
             setLastName(response.data.lastName);
-            response.data.profilImage && setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data);
+            response.data.profilImage ? setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data) : setProfilPicture(null);
             location.pathname.includes('likes') ? setMode('profilLikes') : location.pathname.includes('retweets') ? setMode('profilRT') : setMode('profilTweets');
         })
         .catch((error) => console.log(error));
@@ -35,13 +35,13 @@ function Profil({_id}) {
             </div>
         }
         <div className="top" style={{border: 'none'}}>
-            <div className="profil">
+            <div className="profil correctProfil">
                 <div style={{display:'flex', flexDirection: 'row', gap: '0.5em', marginBottom: '1em'}}>
                     <p>{firstName}</p>
                     <p>{lastName}</p>
                     <p style={{color: 'var(--border-color)'}}>{userName}</p>
                 </div>
-                {profilPicture && <img src={profilPicture} alt="Profil" className="profilPicture"/>}
+                {profilPicture && <img src={profilPicture} alt="Profil" className="profilPicture correctPP"/>}
             </div>
         </div>
         <div className="choiceCategorie">

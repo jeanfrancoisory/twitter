@@ -48,3 +48,13 @@
     margin: auto;
     padding-bottom: 0.5em;
 }
+
+.correctProfil {
+    width: auto;
+    margin: 0 1em;
+}
+
+.correctPP {
+    height: 50%;
+    width: auto;
+}

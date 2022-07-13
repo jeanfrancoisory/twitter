@@ -39,8 +39,8 @@ function Tweet({tweet, refreshTweetList}) {
     }
 
     // React.useEffect(() => {
-    //     setTweetLiked(tweet.liked);
-    //     setTweetRT(tweet.rt);
+    //     setTweetLiked(tweetLiked);
+    //     setTweetRT(tweetRT);
     // });
 
     React.useEffect(() => {
