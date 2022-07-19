@@ -9,5 +9,6 @@ router.delete("/deleteRTTweet/:userID/:tweetID", auth, retweetCtrl.supprRetweet)
 router.get("/getUserRTByID/:userID", auth, retweetCtrl.getUserRTByID);
 router.get("/getUserRTByUN/:userName", auth, retweetCtrl.getUserRTByUN);
 router.get("/getAllRetweets", retweetCtrl.getAllRetweets);
+router.get("/getUserRTSubs/:userID", auth, retweetCtrl.getUserRTSubs);
 
 module.exports = router;

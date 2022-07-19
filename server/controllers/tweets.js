@@ -1,6 +1,7 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
 const UserTweets = require('../models/UserTweets');
+const UserSubs = require("../models/UserSubs");
 const fs = require("fs");
 
 exports.postTweet = (req, res) => {
@@ -180,4 +181,18 @@ exports.getOneTweet = (req, res) => {
         .populate("author")
         .then((t) => t ? res.status(201).json(t) : res.status(201).json({message : "No Tweet"}))
         .catch(() => res.status(400).json({error: "Error getting tweetg"}));
+}
+
+exports.getUserTweetsSubs = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .then((us) => {
+            UserTweets.find({user: {
+                $in: [...us.subscriptions, req.params.userID]
+            }})
+                .populate("user")
+                .populate("tweets")
+                .then((ut) => res.status(201).json(ut))
+                .catch(() => res.status(400).json({error: "Error finding UserTweets"}));
+        })
+        .catch(() => res.status(400).json({error: "Error finding UserSubs"}));
 }

@@ -8,9 +8,6 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const jsonParser = bodyParser.json()
 
-const users = [];
-const tweets = [];
-
 mongoose
   .connect('mongodb://localhost:27017/twitter')
   .then(() => {
@@ -29,12 +26,14 @@ const userRoutes = require("./routes/user");
 const likesRoutes = require("./routes/likes");
 const retweetsRoutes = require("./routes/retweets");
 const responsesRoutes = require("./routes/response");
+const subscriptionRoutes = require("./routes/subscription");
 app.use("/connexion", connexionRoutes);
 app.use("/tweets", tweetsRoutes);
 app.use("/user", userRoutes);
 app.use("/likes", likesRoutes);
 app.use("/retweets", retweetsRoutes);
 app.use("/responses", responsesRoutes);
+app.use("/subscription", subscriptionRoutes);
 
 module.exports = app;
 

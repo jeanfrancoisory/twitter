@@ -11,7 +11,9 @@ function Profil({_id}) {
     const {userName} = useParams();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [thisID, setThisID] = useState('');
     const [profilPicture, setProfilPicture] = useState(null);
+    const [isCurrentUserSub, setIsCurrentUserSub] = useState(false);
     const token = Cookies.get('token');
     const currentUserName = Cookies.get('userName');
     const location = useLocation();
@@ -21,17 +23,40 @@ function Profil({_id}) {
         .then((response) => {
             setFirstName(response.data.firstName);
             setLastName(response.data.lastName);
+            setThisID(response.data._id);
             response.data.profilImage ? setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data) : setProfilPicture(null);
             location.pathname.includes('likes') ? setMode('profilLikes') : location.pathname.includes('retweets') ? setMode('profilRT') : setMode('profilTweets');
         })
         .catch((error) => console.log(error));
     });
 
+    React.useEffect(() => {
+        axios.get(`/subscription/getUserSubscriptions/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => {
+                !response.data.message &&
+                response.data.includes(thisID) && setIsCurrentUserSub(true);
+            })
+    }, [thisID]);
+
+    function onClickSubs() {
+        isCurrentUserSub ?
+        axios.delete(`/subscription/deleteSubscription/${_id}/${thisID}`, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => console.log(response.data.message))
+            .catch((error) => console.log(error)) :
+        axios.post("/subscription/postSubscription", {userID: _id, followID: thisID}, { headers: {authorization: 'Bearer ' + token}})
+            .then((response) => console.log(response.data.message))
+            .catch((error) => console.log(error));
+        setIsCurrentUserSub(!isCurrentUserSub);
+    }
+
     return <div className="Profil">
         {
-            userName === currentUserName &&
+            userName === currentUserName ?
             <div className="editProfil">
                 <div className="buttonEditProfil"><Link to={`/accueil/profil/${userName}/editProfil`} className="link-menu">Editer le profil</Link></div>
+            </div> :
+            <div className="subscribe">
+                <button className="button" onClick={() => onClickSubs()}>{isCurrentUserSub ? 'Se désabonner' : "S'abonner"}</button>
             </div>
         }
         <div className="top" style={{border: 'none'}}>

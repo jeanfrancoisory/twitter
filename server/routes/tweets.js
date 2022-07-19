@@ -12,5 +12,6 @@ router.delete("/deleteUserTweet/:userID/:tweetID", auth, tweetCtrl.supprTweet);
 router.get("/getAuthorTweet/:tweetID", auth, tweetCtrl.getAuthorTweet);
 router.get("/getOneTweet/:tweetID", auth, tweetCtrl.getOneTweet);
 router.post("/addImageTweet/:tweetID", auth, mul.uploadTweet.single("imageTweet"), tweetCtrl.addImageTweet);
+router.get("/getUserTweetsSubs/:userID", auth, tweetCtrl.getUserTweetsSubs);
 
 module.exports = router;

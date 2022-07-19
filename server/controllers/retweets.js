@@ -1,5 +1,6 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
+const UserSubs = require("../models/UserSubs");
 const UserTweets = require('../models/UserTweets');
 
 // TODO : use UpadtaeOne
@@ -226,4 +227,42 @@ exports.getAllRetweets = (req, res) => {
               error: "Error in getting all retweets"
             });
         });
+}
+
+exports.getUserRTSubs = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .then((us) => {
+            UserTweets.find({user: {
+                $in: [...us.subscriptions, req.params.userID]
+            }})
+                .populate("user")
+                .then((ut) => {
+                    if (ut) {
+                        const userRT = [];
+                        const tweetsRT = [];
+                        ut.forEach((element) => {
+                            element.retweets.forEach((e) => {
+                                tweetsRT.push(e._id);
+                                userRT.push(element.user)
+                            });
+                        });
+                        Tweet.find({
+                            _id: {
+                                $in : tweetsRT
+                            }
+                        })
+                            .populate("author")
+                            .then((tweetslist) => {
+                                res.status(201).json({
+                                    tl: tweetslist,
+                                    ids: tweetsRT,
+                                    users: userRT
+                                });
+                            })
+                            .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
+                    }
+                })
+                .catch(() => res.status(400).json({error: "Error in getting all retweets"}));
+        })
+        .catch(() => res.status(400).json({error: "Error finding UserSubs"}));
 }

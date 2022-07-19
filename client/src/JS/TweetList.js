@@ -88,7 +88,8 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
         if (userName) {
             switch (mode) {
                 case 'Home' :
-                    axios.all([axios.get("/tweets/getAllTweets"), axios.get("/retweets/getAllRetweets")])
+                    axios.all([axios.get(`/tweets/getUserTweetsSubs/${_id}`, { headers: {authorization: 'Bearer ' + token}}), 
+                            axios.get(`/retweets/getUserRTSubs/${_id}`, { headers: {authorization: 'Bearer ' + token}})])
                     .then(axios.spread((...response) => {
                         const responseTweets = response[0];
                         const responseRT = response[1];
