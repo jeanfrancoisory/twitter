@@ -1,7 +1,7 @@
 .Tache {
     background-color: var(--background-color);
     width: 100%;
-    font-size: calc(10px + 2vmin);
+    font-size: calc(4px + 2vmin);
     color: var(--text-color);
     font-weight: 700;
     display: flex;

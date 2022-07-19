@@ -1,0 +1,41 @@
+.MailBox {
+    font-size: calc(10px + 1vmin);
+    font-weight: 700;
+    color: var(--text-color);
+    position: fixed;
+    bottom: 2px;
+    right: 3.56%;
+    background-color: var(--background-color);
+    border: 2px var(--border-color) solid;
+    border-radius: 20px;
+    width: 21.4%;
+}
+
+.MailBox > p {
+    margin-left: 1em;
+}
+
+.visibleMailBox {
+    height: 3em;
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.messagesDisplay {
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+    margin-bottom: 1em
+}
+
+.noMessages {
+    font-size: calc(6px + 1vmin);
+    font-weight: 500;
+}
+
+.messageButton {
+    font-size: calc(6px + 1vmin);
+    font-weight: 500;
+}

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import MailBox from "./MailBox";
 
 function Trend() {
     const [search, setSearch] = useState('');
@@ -45,6 +46,7 @@ function Trend() {
                 </div>
             ))}
         </div>
+        <MailBox/>
     </div>;
 }
 export default Trend;

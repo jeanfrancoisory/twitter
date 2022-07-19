@@ -27,6 +27,7 @@ const likesRoutes = require("./routes/likes");
 const retweetsRoutes = require("./routes/retweets");
 const responsesRoutes = require("./routes/response");
 const subscriptionRoutes = require("./routes/subscription");
+const conversationsRoutes = require("./routes/conversation");
 app.use("/connexion", connexionRoutes);
 app.use("/tweets", tweetsRoutes);
 app.use("/user", userRoutes);
@@ -34,6 +35,7 @@ app.use("/likes", likesRoutes);
 app.use("/retweets", retweetsRoutes);
 app.use("/responses", responsesRoutes);
 app.use("/subscription", subscriptionRoutes);
+app.use("/conversations", conversationsRoutes);
 
 module.exports = app;
 

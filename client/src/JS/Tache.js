@@ -1,7 +1,7 @@
 import React from "react";
 import "../CSS/Tache.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faHouse, faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faHouse, faAnchor, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 
 
@@ -21,6 +21,12 @@ function Tache({userName}) {
             <Link to={`/accueil/profil/${userName}`} className="link-menu">
                 <FontAwesomeIcon icon={faUser} className="icon"/>
                 <p>Profil</p>
+            </Link>
+        </div>
+        <div className="Messages menu-items">
+            <Link to={`/accueil/messages/${userName}`} className="link-menu">
+                <FontAwesomeIcon icon={faEnvelope} className="icon"/>
+                <p>Messages</p>
             </Link>
         </div>
     </div>;

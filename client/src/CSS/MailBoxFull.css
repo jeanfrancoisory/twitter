@@ -1,0 +1,67 @@
+.MailBoxFull {
+    background-color: var(--background-color);
+    width: 130%;
+    border: var(--border-color) solid;
+    border-width: 0 1px;
+    font-size: calc(4px + 1.5vmin);
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.topMessage {
+    padding: 1em;
+    border-bottom: 1px var(--border-color) solid;
+}
+
+.userListDest {
+    position: absolute;
+    margin-left: 2%;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--background-color);
+}
+
+.userNameDest {
+    margin: 1em;
+    display: flex;
+    gap: 0.5em;
+    cursor: pointer;
+    font-size: calc(2px + 1.5vmin);
+}
+
+.newMessage {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.newMessage > form {
+    display: flex;
+    flex-direction: column;
+}
+
+.newMessage > form > textarea {
+    height: 4em;
+    width: 80%;
+    resize: none;
+}
+
+.inputMessage {
+    background-color: rgb(24, 24, 24);
+    color: var(--text-color);
+    font-size: calc(4px + 1.5vmin);
+    font-weight: 500;
+    border: none;
+    padding: 0.5em 1em;
+    width: 50%;
+    margin: 1em 0 1em 5%;
+    overflow: scroll;
+}
+
+.inputMessage::placeholder {
+    color: var(--border-color);
+    font-size: calc(4px + 1.5vmin);
+    font-weight: 700;
+}
+
+.inputMessage:focus {
+    outline: none;
+}
