@@ -27,7 +27,8 @@ function File({_id}) {
     }, []);
 
     function sendTweetValue(content, image) {
-        image && setTweetMedia(image);
+        console.log(image)
+        image ? setTweetMedia(image) : setTweetMedia(null);
         setTweetValue(content);
     }
 

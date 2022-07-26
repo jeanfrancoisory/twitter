@@ -58,6 +58,7 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                 .post('/tweets/postTweet', {content: tweetValue, date: Date.now(), _id: _id}, 
                 { headers: {authorization: 'Bearer ' + token}})
                 .then((response) => {
+                    console.log(response.data)
                     response.data.date = timeConverter(response.data.date);
                     if (tweetMedia) {
                         const formData = new FormData();
@@ -91,30 +92,38 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                     axios.all([axios.get(`/tweets/getUserTweetsSubs/${_id}`, { headers: {authorization: 'Bearer ' + token}}), 
                             axios.get(`/retweets/getUserRTSubs/${_id}`, { headers: {authorization: 'Bearer ' + token}})])
                     .then(axios.spread((...response) => {
-                        const responseTweets = response[0];
+                        const responseTweets = response[0].data.message ? null : response[0].data
                         const responseRT = response[1];
                         const tweets = [];
-                        responseTweets.data.forEach((element) => {
+                        function pushTweet(element) {
                             element.tweets.forEach((e) => {
-                                const t = {
-                                    _id: e._id,
-                                    content: e.content,
-                                    userName: element.user.userName,
-                                    firstName: element.user.firstName,
-                                    lastName: element.user.lastName,
-                                    date: timeConverter(e.date),
-                                    userID: element.user._id,
-                                    liked: e.favorisUsers.includes(_id) ? true : false,
-                                    rt: e.retweetsUsers.includes(_id) ? true : false,
-                                    nbFavs: e.favoris,
-                                    nbRT: e.retweets,
-                                    isAnswerTo: e.isAnswerTo,
-                                    profilPicture: element.user.profilImage ? 'data:'+element.user.profilImage.contentType+';base64, '+element.user.profilImage.data : null,
-                                    tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
-                                }
-                                tweets.push(t);
-                            });
-                        });
+                                    const t = {
+                                        _id: e._id,
+                                        content: e.content,
+                                        userName: element.user.userName,
+                                        firstName: element.user.firstName,
+                                        lastName: element.user.lastName,
+                                        date: timeConverter(e.date),
+                                        userID: element.user._id,
+                                        liked: e.favorisUsers.includes(_id) ? true : false,
+                                        rt: e.retweetsUsers.includes(_id) ? true : false,
+                                        nbFavs: e.favoris,
+                                        nbRT: e.retweets,
+                                        isAnswerTo: e.isAnswerTo,
+                                        profilPicture: element.user.profilImage ? 'data:'+element.user.profilImage.contentType+';base64, '+element.user.profilImage.data : null,
+                                        tweetImage: e.tweetImage ? 'data:'+e.tweetImage.contentType+';base64, '+e.tweetImage.data : null
+                                    }
+                                    tweets.push(t);
+                                });
+                        }
+                        if (responseTweets) {
+                            Array.isArray(responseTweets) ?
+                            responseTweets.forEach((element) => {
+                                pushTweet(element)
+                            }) :
+                            pushTweet(responseTweets);
+                        }
+                        !responseRT.data.message &&
                         responseRT.data.ids.forEach((id, index) => {
                             const tweet = responseRT.data.tl.find(el => el._id === id);
                             const user = responseRT.data.users[index]

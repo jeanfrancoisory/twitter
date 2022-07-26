@@ -186,13 +186,19 @@ exports.getOneTweet = (req, res) => {
 exports.getUserTweetsSubs = (req, res) => {
     UserSubs.findOne({user: req.params.userID})
         .then((us) => {
+            us ?
             UserTweets.find({user: {
                 $in: [...us.subscriptions, req.params.userID]
             }})
                 .populate("user")
                 .populate("tweets")
-                .then((ut) => res.status(201).json(ut))
-                .catch(() => res.status(400).json({error: "Error finding UserTweets"}));
+                .then((ut) => ut ? res.status(201).json(ut) : res.status(201).json({message: "No tweets"}))
+                .catch(() => res.status(400).json({error: "Error finding UserTweets"})) :
+            UserTweets.findOne({user: req.params.userID})
+                .populate("user")
+                .populate("tweets")
+                .then((ut) => ut ? res.status(201).json(ut) : res.status(201).json({message: "No tweets"}))
+                .catch(() => res.status(400).json({error: "Error finding UserTweets"}))
         })
         .catch(() => res.status(400).json({error: "Error finding UserSubs"}));
 }

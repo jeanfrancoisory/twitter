@@ -1,0 +1,122 @@
+.Conversation {
+    background-color: var(--background-color);
+    width: 100%;
+    border-bottom: 1px solid var(--border-color);
+    font-size: calc(4px + 1.5vmin);
+    color: var(--text-color);
+    font-weight: 700;
+    padding: 1em 0;
+}
+
+.imageConv {
+    width: 10%;
+    display: flex;
+}
+
+.profilPictureConv {
+    width: 80%;
+    height: auto;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.nameMessage {
+    display: flex;
+    flex-direction: column;
+}
+
+.nameConv {
+    margin-top: 0.5em;;
+    display: flex;
+    gap: 0.5em;
+}
+
+.fullConv {
+    display: flex;
+    flex-direction: column;
+}
+
+.topConv {
+    display: flex;
+    justify-content: space-between;
+}
+
+.convCorps {
+    margin: 1em;
+    background-color: var(--border-color);
+    border-radius: 20px;
+    overflow: scroll;
+    max-height: 40vh;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.iconCloseConv {
+    margin: 0 1em;
+    font-weight: 800;
+    font-size: calc(10px + 2vmin);
+    cursor: pointer;
+}
+
+.blockMessage {
+    display: flex;
+}
+
+.rightMessage {
+    justify-content: right;
+}
+
+.leftMessage {
+    justify-content: left;
+}
+
+.messageContent {
+    margin: 1em;
+    padding: 1em;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 10px;
+}
+
+.dateMessage {
+    margin-top: 0.5em;
+    font-size: calc(4px + 1vmin);
+    color: var(--border-color);
+    font-weight: 400;
+}
+
+.supprMessage {
+    display: flex;
+    align-items: center;
+}
+
+.supprButtonHidden {
+    visibility: hidden;
+}
+
+.blockMessage > [class*='supprButtonVisible'] {
+    visibility: visible;
+}
+
+.popUpSupprHidden {
+    visibility: hidden;
+}
+
+[class*='popUpSupprVisible'] {
+    visibility: visible;
+}
+
+.popUpSuppr {
+    display: flex;
+    margin-right: 1em;
+    border-radius: 10px;
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    padding: 1em;
+    cursor: pointer;
+}
+
+.popUpSuppr > div {
+    margin-left: 0.5em;
+}

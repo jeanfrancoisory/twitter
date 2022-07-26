@@ -231,7 +231,7 @@ exports.getAllRetweets = (req, res) => {
 
 exports.getUserRTSubs = (req, res) => {
     UserSubs.findOne({user: req.params.userID})
-        .then((us) => {
+        .then((us) => { us ?
             UserTweets.find({user: {
                 $in: [...us.subscriptions, req.params.userID]
             }})
@@ -260,9 +260,31 @@ exports.getUserRTSubs = (req, res) => {
                                 });
                             })
                             .catch(() => res.status(400).json({message: "Error in finding the tweets"}))
+                    } else {
+                        res.status(201).json({message: "No retweets"});
                     }
                 })
-                .catch(() => res.status(400).json({error: "Error in getting all retweets"}));
+                .catch(() => res.status(400).json({error: "Error in getting all retweets"})):
+            UserTweets.findOne({user: req.params.userID})
+                .populate("user")
+                .populate("retweets")
+                .then((ut) => {
+                    if(ut) {
+                        const tweetsRT = [];
+                        const userRT = [];
+                        ut.retweets.forEach((r) => {
+                            tweetsRT.push(r._id);
+                            userRT.push(ut.user);
+                        });
+                        res.status(201).json({
+                            tl: ut.retweets,
+                            ids: tweetsRT,
+                            users: userRT
+                        })
+                    }else {
+                        res.status(201).json({message: "No retweets"})
+                    }
+                })
         })
         .catch(() => res.status(400).json({error: "Error finding UserSubs"}));
 }

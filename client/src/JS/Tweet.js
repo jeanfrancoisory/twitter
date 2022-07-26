@@ -3,7 +3,7 @@ import "../CSS/Tweet.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faRetweet, faComment, faShare, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import PopUpTweet from '../JS/PopUpTweet'
+import PopUpTweet from './PopUpTweet'
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
 
@@ -164,7 +164,7 @@ function Tweet({tweet, refreshTweetList}) {
                 <Link to={`/accueil/profil/${tweet.userName}/status/${tweet._id}`} state={{tweet: tweet}} style={{textDecoration: 'none'}}>
                 <p>{tweet.content}</p>
                 </Link>
-                {tweet.tweetImage && <img src={tweet.tweetImage} alt="imgTweet"/>}
+                {(tweet.tweetImage && tweet.tweetImage.toString().match(/data/)) && <img src={tweet.tweetImage} alt="imgTweet"/>}
                 <div className="LRT">
                     <div className="LRTParts">
                         <FontAwesomeIcon icon={faComment} className="iconsLRT Response"/>
