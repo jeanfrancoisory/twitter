@@ -10,7 +10,7 @@ import FullTweet from "./FullTweet";
 import EditProfil from "./EditProfil";
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import MailBoxFull from "./MailBoxFull";
+import MailBoxFull from "./MailBoxFull"; 
 
 function Accueil() {
     const _id = Cookies.get('userID');

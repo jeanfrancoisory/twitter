@@ -1,2 +1,4 @@
 node_modules
 uploads
+.vscode
+client/node_modules
