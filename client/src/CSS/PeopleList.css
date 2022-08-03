@@ -1,0 +1,14 @@
+.PeopleList {
+    background-color: var(--background-color);
+    width: 130%;
+    border: var(--border-color) solid;
+    border-width: 0 1px;
+    font-size: calc(10px + 1vmin);
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.topUserList {
+    display: flex;
+    border-bottom: 1px var(--border-color) solid;
+}

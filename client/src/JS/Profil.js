@@ -14,6 +14,8 @@ function Profil({_id}) {
     const [thisID, setThisID] = useState('');
     const [profilPicture, setProfilPicture] = useState(null);
     const [isCurrentUserSub, setIsCurrentUserSub] = useState(false);
+    const [numberSub, setNumberSub] = useState(0);
+    const [numberFollow, setNumberFollow] = useState(0);
     const token = Cookies.get('token');
     const currentUserName = Cookies.get('userName');
     const location = useLocation();
@@ -29,6 +31,15 @@ function Profil({_id}) {
         })
         .catch((error) => console.log(error));
     });
+
+    React.useEffect(() => {
+        thisID!=='' && axios.all([axios.get(`/subscription/getUserNumberSub/${thisID}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}}),
+                axios.get(`/subscription/getUserNumberFollow/${thisID}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}})])
+            .then((responses) => {
+                setNumberSub(responses[0].data);
+                setNumberFollow(responses[1].data);
+            })
+    }, [thisID]);
 
     React.useEffect(() => {
         axios.get(`/subscription/getUserSubscriptions/${_id}`, { headers: {authorization: 'Bearer ' + token}})
@@ -67,6 +78,14 @@ function Profil({_id}) {
                     <p style={{color: 'var(--border-color)'}}>{userName}</p>
                 </div>
                 {profilPicture && <img src={profilPicture} alt="Profil" className="profilPicture correctPP"/>}
+            </div>
+            <div className="subFollow">
+                <div className="numberSF">
+                    <Link to={`/accueil/profil/${userName}/following`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberFollow} Abonnés</Link>
+                </div>
+                <div className="numberSF">
+                    <Link to={`/accueil/profil/${userName}/followers`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberSub} Abonnements</Link>
+                </div>
             </div>
         </div>
         <div className="choiceCategorie">

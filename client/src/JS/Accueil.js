@@ -10,7 +10,8 @@ import FullTweet from "./FullTweet";
 import EditProfil from "./EditProfil";
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import MailBoxFull from "./MailBoxFull"; 
+import MailBoxFull from "./MailBoxFull";
+import PeopleList from "./PeopleList";
 
 function Accueil() {
     const _id = Cookies.get('userID');
@@ -31,6 +32,8 @@ function Accueil() {
             <Route path="/profil/:userName/*" element={<Profil _id={_id}></Profil>}/>
             <Route path="/profil/:userName/status/:tweetID" element={<FullTweet/>}/>
             <Route path="/profil/:userName/editProfil" element={<EditProfil/>}/>
+            <Route path="/profil/:userName/following" element={<PeopleList _id={_id}/>}/>
+            <Route path="/profil/:userName/followers" element={<PeopleList/>}/>
             <Route path="/messages/:userName" element={<MailBoxFull _id={_id}/>}/>
         </Routes>
         <Trend></Trend>

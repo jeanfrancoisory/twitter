@@ -57,3 +57,29 @@ exports.getUserSubscritions = (req, res) => {
         .then((userSubs) => userSubs ? res.status(201).json(userSubs.subscriptions) : res.status(201).json({message: "No subscriptions"}))
         .catch(() => res.status(400).json({error: "Error getting User Subscriptions"}));
 }
+
+exports.getUserNumberSub = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .then((userSubs) => userSubs ? res.status(201).json(userSubs.subscriptions.length) : res.status(201).json({message: "No subscriptions"}))
+        .catch(() => res.status(400).json({error: "Error getting User Subscriptions"}));
+}
+
+exports.getUserNumberFollow = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .then((userSubs) => userSubs ? res.status(201).json(userSubs.followers.length) : res.status(201).json({message: "No subscriptions"}))
+        .catch(() => res.status(400).json({error: "Error getting User Subscriptions"}));
+}
+
+exports.getUserSub = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .populate('subscriptions')
+        .then((userSubs) => userSubs ? res.status(201).json(userSubs.subscriptions) : res.status(201).json({message: "No subscriptions"}))
+        .catch(() => res.status(400).json({error: "Error getting User Subscriptions"}));
+}
+
+exports.getUserFollow = (req, res) => {
+    UserSubs.findOne({user: req.params.userID})
+        .populate('followers')
+        .then((userSubs) => userSubs ? res.status(201).json(userSubs.followers) : res.status(201).json({message: "No subscriptions"}))
+        .catch(() => res.status(400).json({error: "Error getting User Subscriptions"}));
+}

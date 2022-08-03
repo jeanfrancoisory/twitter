@@ -58,3 +58,12 @@
     height: 50%;
     width: auto;
 }
+
+.subFollow {
+    color: var(--text-color);
+}
+
+.numberSF:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
