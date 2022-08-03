@@ -12,7 +12,7 @@ function EditProfil() {
     const [profilImageServer, setProfilImageServer] = useState();
 
     React.useEffect(() => {
-        axios.get(`/user/getUserByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.get(`/user/getUserByUN/${Cookies.get('userName')}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}})
             .then((response) => {
                 setNewFirstName(response.data.firstName);
                 setNewLastName(response.data.lastName);

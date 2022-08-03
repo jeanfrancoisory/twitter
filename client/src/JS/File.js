@@ -11,11 +11,10 @@ function File({_id}) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [profilPicture, setProfilPicture] = useState();
-    const token = Cookies.get('token');
     const userName = Cookies.get('userName');
 
     React.useEffect(() => {
-        axios.get(`/user/getUserByUN/${userName}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.get(`/user/getUserByUN/${Cookies.get('userName')}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}})
             .then((response) => {
                 if (response.data.profilImage)  {
                     setProfilPicture('data:'+response.data.profilImage.contentType+';base64, '+response.data.profilImage.data);

@@ -2,7 +2,7 @@ import React, {useState, useRef} from "react";
 import "../CSS/MailBoxFull.css";
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import Conversation from "./Conversation"
+import Conversation from "./Conversation";
 
 function MailBoxFull({_id}) {
     const message = useRef(null);
@@ -13,6 +13,9 @@ function MailBoxFull({_id}) {
     const token = Cookies.get('token');
     const [newMessage, setNewMessage] = useState(false);
     const [conversations, setConversations] = useState([]);
+    const [refreshConvs, setRefreshConvs] = useState(false);
+
+    //TODO : refresh Conversations
 
     React.useEffect(() => {
         userSearch.length ?
@@ -25,11 +28,15 @@ function MailBoxFull({_id}) {
     }, [userSearch]);
 
     React.useEffect(() => {
-        axios.get(`/conversations/getUserConvs/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        refreshConvs && getConversations(); // eslint-disable-next-line
+    }, [refreshConvs]);
+
+    function getConversations() {
+        axios.get(`/conversations/getUserConvs/${_id}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}})
             .then((response) => {
                 !response.data.message && setConversations(response.data);
-            })
-    }, []);
+            }).catch((error) => console.log((error)));
+    }
 
     function handleClickUser(finalUserID, finalUserName) {
         setUserSearch('');
@@ -64,7 +71,7 @@ function MailBoxFull({_id}) {
         event.target.reset();
     }
 
-    return <div className="MailBoxFull">
+    return <div className="MailBoxFull" onMouseEnter={() => setRefreshConvs(true)} onMouseLeave={() => setRefreshConvs(false)}>
         <div className="topMessage">
             Messages
         </div>

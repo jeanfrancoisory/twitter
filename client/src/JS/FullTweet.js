@@ -46,7 +46,7 @@ function FullTweet() {
 
     // Refresh the tweetList when from one tweet to another but with the same author
     React.useEffect(() => {
-        setRefresh(!refresh);
+        setRefresh(!refresh); // eslint-disable-next-line
     }, [tweet]);
 
     React.useEffect(() => {
@@ -74,7 +74,7 @@ function FullTweet() {
             })
             .catch(err => {
                 console.error(err);
-            })
+            }) // eslint-disable-next-line
     }, []);
 
     function sendTweetValue(content, image) {

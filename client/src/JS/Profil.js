@@ -35,7 +35,7 @@ function Profil({_id}) {
             .then((response) => {
                 !response.data.message &&
                 response.data.includes(thisID) && setIsCurrentUserSub(true);
-            })
+            }) // eslint-disable-next-line
     }, [thisID]);
 
     function onClickSubs() {

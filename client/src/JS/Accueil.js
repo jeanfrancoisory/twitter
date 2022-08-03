@@ -14,11 +14,10 @@ import MailBoxFull from "./MailBoxFull";
 
 function Accueil() {
     const _id = Cookies.get('userID');
-    const token = Cookies.get('token');
     const [userName, setUserName] = useState('');
 
     React.useEffect(() => {
-        axios.get(`/user/getUser/${_id}`, { headers: {authorization: 'Bearer ' + token}})
+        axios.get(`/user/getUser/${Cookies.get('userID')}`, { headers: {authorization: 'Bearer ' + Cookies.get('token')}})
             .then((response) => {
                 setUserName(response.data.userName);
             })

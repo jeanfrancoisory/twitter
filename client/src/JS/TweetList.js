@@ -81,7 +81,7 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                     console.error(err);
                 });
             }
-        }
+        } // eslint-disable-next-line
     }, [tweetValue]);
 
     React.useEffect(() => {
@@ -272,7 +272,7 @@ function TweetList({userName, _id, tweetValue, tweetMedia, mode, tweetID, refres
                 default :
                     break;
             }
-        }
+        } // eslint-disable-next-line
       }, [mode, userName, refresh]);
 
     function refreshTweetList(tweetID) {

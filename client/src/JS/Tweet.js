@@ -15,7 +15,7 @@ function Tweet({tweet, refreshTweetList}) {
     const currentUserID = Cookies.get('userID');
     const token = Cookies.get('token');
     const [userNameResponse, setUserNameResponse] = useState(null);
-    const [tweetIDREsponse, setTweetIDResponse] = useState(null);
+    const [tweetIDResponse, setTweetIDResponse] = useState(null);
     const [tweetResponse, setTweetResponse] = useState(null);
 
     function timeConverter(time) {
@@ -68,7 +68,7 @@ function Tweet({tweet, refreshTweetList}) {
             })
             .catch(err => {
                 console.error(err);
-            })
+            }) // eslint-disable-next-line
     }, []);
 
     function handleOpenPopUp() {
@@ -155,7 +155,7 @@ function Tweet({tweet, refreshTweetList}) {
                     <div>en réponse à </div>
                     <Link to={`/accueil/profil/${userNameResponse}`} className="linksResponse">{userNameResponse}</Link>
                     <div>
-                        <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDREsponse}`} className="linksResponse"
+                        <Link to={`/accueil/profil/${userNameResponse}/status/${tweetIDResponse}`} className="linksResponse"
                         state={{tweet: tweetResponse}}>
                             , à ce tweet
                         </Link>

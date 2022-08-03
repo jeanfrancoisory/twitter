@@ -13,15 +13,22 @@ function MailBox() {
     const currentID = Cookies.get('userID');
     const currentUserName = Cookies.get('userName');
 
+    //TODO: New Messages Number
+
     React.useEffect(() => {
+        fetchConversations(); // eslint-disable-next-line
+    }, []);
+
+    function fetchConversations() {
         axios.get(`/conversations/getUserConvs/${currentID}`, { headers: {authorization: 'Bearer ' + token}})
             .then((response) => {
                 if (!response.data.message) {
                     setConversations(response.data);
                     setNoMessages(false);
                 }
-            })
-    }, []);
+            }).catch((error) => console.log(error));
+        setTimeout(() => fetchConversations(), 60000);
+    }
 
     function handleClickDisplayMessage() {
         setIsDisplay(!isDiplay);
