@@ -11,4 +11,8 @@
 .topUserList {
     display: flex;
     border-bottom: 1px var(--border-color) solid;
+    font-size: calc(5px + 2vmin);
+    font-weight: 700;
+    gap: 0.5em;
+    padding: 1em;
 }

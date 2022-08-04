@@ -81,10 +81,10 @@ function Profil({_id}) {
             </div>
             <div className="subFollow">
                 <div className="numberSF">
-                    <Link to={`/accueil/profil/${userName}/following`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberFollow} Abonnés</Link>
+                    <Link to={`/accueil/profil/${userName}/followers`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberFollow} Abonnés</Link>
                 </div>
                 <div className="numberSF">
-                    <Link to={`/accueil/profil/${userName}/followers`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberSub} Abonnements</Link>
+                    <Link to={`/accueil/profil/${userName}/following`} style={{textDecoration: 'none', color: 'var(--text-color)'}}>{numberSub} Abonnements</Link>
                 </div>
             </div>
         </div>

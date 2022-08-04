@@ -35,26 +35,28 @@ function PeopleList() {
                 .then((response) => setUserList(response.data))
                 .catch((error) => console.log(error));
         } // eslint-disable-next-line
-    }, [ID]);
+    }, [ID, location.pathname]);
 
     return <div className="PeopleList">
         <div className="topUserList">
-            <FontAwesomeIcon icon={faArrowLeft}/>
+            <Link to={`/accueil/profil/${userName}`} style={{color: 'var(--text-color)'}}>
+                <FontAwesomeIcon icon={faArrowLeft}/>
+            </Link>
             <div>{firstName}</div>
             <div>{lastName}</div>
-            <div>{userName}</div>
+            <div style={{color: 'var(--border-color)'}}>{userName}</div>
         </div>
         <div className="choiceCategorie">
-            <div className="followingChoice choicePart">
+            <div className="followingChoice choicePart" style={{width: '50%'}}>
                 <Link to={`/accueil/profil/${userName}/following`} className="link-menu">
-                    <div style={{borderBottom: 'var(--blue-color) solid 3px'}}>
+                    <div style={{borderBottom: location.pathname.includes('following') ? 'var(--blue-color) solid 3px' : 'none'}}>
                         Abonnements
                     </div>
                 </Link>
             </div>
-            <div className="followersChoice choicePart">
+            <div className="followersChoice choicePart" style={{width: '50%'}}>
                 <Link to={`/accueil/profil/${userName}/followers`} className="link-menu">
-                    <div>
+                    <div style={{borderBottom: location.pathname.includes('followers') ? 'var(--blue-color) solid 3px' : 'none'}}>
                         Abonnés
                     </div>
                 </Link>
@@ -62,7 +64,18 @@ function PeopleList() {
         </div>
         <div className="userList">
             {userList.map((user) => (
-                <div key={user._id}>{user.userName}</div>
+                <div key={user._id} className="userSearch">
+                    <Link to={`/accueil/profil/${user.userName}`} style={{textDecoration: 'none'}} className="linkSearch">
+                        {user.profilImage && <img src={'data:'+user.profilImage.contentType+';base64, '+user.profilImage.data} alt="Profil" className="profilPictureSearch"/>}
+                        <div className="userNameSearch">
+                            <div style={{display: 'flex', gap: '0.5em'}}>
+                                <div>{user.firstName}</div>
+                                <div>{user.lastName}</div>
+                            </div>
+                            <div style={{color: 'var(--border-color)'}}>{user.userName}</div>
+                        </div>
+                    </Link>
+                </div>
             ))}
         </div>
     </div>;
